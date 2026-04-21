@@ -454,11 +454,25 @@
       border:1px solid transparent;
     }
 
-    .rank-1{color:#9ff0c7;background:rgba(53,210,138,.14);border-color:rgba(53,210,138,.24)}
-    .rank-2{color:#ffe68a;background:rgba(250,204,21,.14);border-color:rgba(250,204,21,.24)}
-    .rank-3{color:#e9d5ff;background:rgba(192,132,252,.14);border-color:rgba(192,132,252,.24)}
-	
-	    .result-badge{
+    .rank-1{
+      color:#2b1a00;
+      background:linear-gradient(135deg,#FFD700,#FFC300);
+      border-color:#FFD700;
+    }
+
+    .rank-2{
+      color:#1f2937;
+      background:linear-gradient(135deg,#C0C0C0,#E5E7EB);
+      border-color:#C0C0C0;
+    }
+
+    .rank-3{
+      color:#2b1406;
+      background:linear-gradient(135deg,#CD7F32,#E0A96D);
+      border-color:#CD7F32;
+    }
+
+    .result-badge{
       min-height:28px;
       padding:0 12px;
       border-radius:999px;
@@ -479,8 +493,7 @@
       background:rgba(255,107,125,.12);
       border-color:rgba(255,107,125,.24);
     }
-
-    .table-wrap{
+	    .table-wrap{
       overflow:auto;
       border-top:1px solid rgba(255,255,255,.10);
       max-height:640px;
@@ -842,7 +855,8 @@
         <div class="kpi-note">WoA minus 2nd place</div>
       </div>
     </section>
-	    <section class="panel glass">
+
+    <section class="panel glass">
       <div class="panel-head">
         <div>
           <h3 class="panel-title">Clan Event Summary</h3>
@@ -947,21 +961,6 @@
     <section class="panel glass">
       <div class="panel-head">
         <div>
-          <h3 class="panel-title">Clan Ranking Comparison</h3>
-          <p class="panel-desc">Selected event comparison across WoA, 2nd place, and 3rd place clans</p>
-        </div>
-        <div class="chip">Event Comparison</div>
-      </div>
-      <div class="panel-body">
-        <div class="chart-wrap">
-          <canvas id="clanChart"></canvas>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel glass">
-      <div class="panel-head">
-        <div>
           <h3 class="panel-title">Historical Points Trend</h3>
           <p class="panel-desc">Total clan points across Trials of Olympus events</p>
         </div>
@@ -1051,7 +1050,7 @@
   <button id="backToTopBtn" class="back-to-top">↑</button>
 
   <script>
-    const RAW_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=1395127106&single=true&output=csv";
+      const RAW_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=1395127106&single=true&output=csv";
     const EVENT_SUMMARY_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=342515609&single=true&output=csv";
     const EVENT_ANALYSIS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=1326524715&single=true&output=csv";
     const CLAN_RESULTS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=1235655669&single=true&output=csv";
@@ -1066,7 +1065,6 @@
 
     let trendChart = null;
     let topChart = null;
-    let clanChart = null;
 
     function parseCSVLine(line){
       const result = [];
@@ -1146,10 +1144,10 @@
     }
 
     function metricClass(value, hasPrevious = true){
-      if(!hasPrevious) return 'metric-none';
-      if(value > 0) return 'metric-pos';
-      if(value < 0) return 'metric-neg';
-      return 'metric-flat';
+      if(!hasPrevious) return "metric-none";
+      if(value > 0) return "metric-pos";
+      if(value < 0) return "metric-neg";
+      return "metric-flat";
     }
 
     function initials(name){
@@ -1171,6 +1169,24 @@
       return fetch(url + sep + "_ts=" + Date.now())
         .then(r => r.text())
         .then(parseCSV);
+    }
+
+    function normalizeClanName(name){
+      return String(name || "")
+        .toLowerCase()
+        .replace(/[\[\]]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function isWoaAlias(name){
+      const n = normalizeClanName(name);
+      return [
+        "woa",
+        "warriors of asgard",
+        "woariors of asgard",
+        "woa warriors of asgard"
+      ].includes(n);
     }
 
     function populateEvents(){
@@ -1265,7 +1281,8 @@
         }
       });
     }
-	    function buildTop3FromClanRow(clanRow){
+
+    function buildTop3FromClanRow(clanRow){
       if(!clanRow) return [];
 
       const mainClan = getValueByAliases(clanRow,["Clan","Clan_Name","Name"]) || "[WoA] Warriors of Asgard";
@@ -1279,41 +1296,22 @@
       const opp2Name = getValueByAliases(clanRow,["Opponent_2","Opponent2","Third_Clan","3rd Place Clan"]) || "-";
       const opp2Score = num(getValueByAliases(clanRow,["Opponent_2_Score","Opponent2_Score","Third_Clan_Score","3rd Place Score"]));
 
+      const mainNorm = normalizeClanName(mainClan);
+      const seen = new Set();
+
       return [
         { rank: mainRank, clan: mainClan, score: mainScore, participants: mainParticipants },
         { rank: 2, clan: opp1Name, score: opp1Score, participants: "-" },
         { rank: 3, clan: opp2Name, score: opp2Score, participants: "-" }
-      ].filter(r => r.clan && r.clan !== "-");
-    }
+      ].filter(r => {
+        const n = normalizeClanName(r.clan);
 
-    function renderClanChart(rows){
-      const ctx = document.getElementById("clanChart").getContext("2d");
-      if(clanChart) clanChart.destroy();
+        if(!n || r.clan === "-") return false;
+        if(n !== mainNorm && isWoaAlias(r.clan)) return false;
+        if(seen.has(n)) return false;
 
-      clanChart = new Chart(ctx,{
-        type:"bar",
-        data:{
-          labels:rows.map(r => r.clan),
-          datasets:[{
-            label:"Score",
-            data:rows.map(r => r.score),
-            backgroundColor:["#c084fc","#ffb347","#35d28a"],
-            borderRadius:10,
-            borderSkipped:false
-          }]
-        },
-        options:{
-          responsive:true,
-          maintainAspectRatio:false,
-          plugins:{legend:{display:false}},
-          scales:{
-            x:{ticks:{color:"#f3e8ff"}, grid:{display:false}},
-            y:{
-              ticks:{color:"#f3e8ff", callback:v => format(v)},
-              grid:{color:"rgba(255,255,255,.08)"}
-            }
-          }
-        }
+        seen.add(n);
+        return true;
       });
     }
 
@@ -1397,8 +1395,7 @@
         </li>
       `).join("");
     }
-
-    function renderEvent(){
+	    function renderEvent(){
       const eventRows = analysisRows.filter(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === selectedEvent);
       const searchTerm = String(document.getElementById("playerSearch").value || "").toLowerCase();
       const filtered = eventRows.filter(r => !searchTerm || String(getValueByAliases(r,["Player","Name","Player Name"])).toLowerCase().includes(searchTerm));
@@ -1427,13 +1424,16 @@
       if(clanRow){
         const top3 = buildTop3FromClanRow(clanRow);
 
-        const woaName = top3[0]?.clan || "[WoA] Warriors of Asgard";
-        const woaScore = top3[0]?.score || 0;
-        const woaRank = top3[0]?.rank || 1;
-        const woaParticipants = top3[0]?.participants || "-";
+        const woaRow = top3.find(r => isWoaAlias(r.clan)) || top3[0] || null;
+        const secondRow = top3.find(r => !isWoaAlias(r.clan) && r.rank === 2) || top3.find(r => !isWoaAlias(r.clan)) || null;
 
-        const secondName = top3[1]?.clan || "-";
-        const secondScore = top3[1]?.score || 0;
+        const woaName = woaRow?.clan || "[WoA] Warriors of Asgard";
+        const woaScore = woaRow?.score || 0;
+        const woaRank = woaRow?.rank || 1;
+        const woaParticipants = woaRow?.participants || "-";
+
+        const secondName = secondRow?.clan || "-";
+        const secondScore = secondRow?.score || 0;
 
         const margin = woaScore - secondScore;
         const result = getValueByAliases(clanRow,["Result"]) || (woaRank === 1 ? "WIN" : "LOSS");
@@ -1456,7 +1456,6 @@
         badge.className = "result-badge " + (String(result).toUpperCase() === "WIN" ? "result-win" : "result-loss");
 
         renderTop3Cards(top3);
-        renderClanChart(top3);
       } else {
         set("heroClanResult", "No data");
         set("kpiClanResult", "-");
@@ -1474,11 +1473,6 @@
         const badge = document.getElementById("clanResultBadge");
         badge.textContent = "NO DATA";
         badge.className = "result-badge result-loss";
-
-        if(clanChart){
-          clanChart.destroy();
-          clanChart = null;
-        }
       }
 
       document.getElementById("analysisTable").innerHTML = filtered

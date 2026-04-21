@@ -26,6 +26,7 @@
       --yellow:#facc15;
       --red:#ff6b7d;
       --purple:#8b5cf6;
+      --gray:#b9c7dc;
 
       --shadow:0 16px 40px rgba(0,0,0,.28);
       --radius-xl:22px;
@@ -56,7 +57,7 @@
 
     .glass{
       background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid var(--stroke);
       box-shadow:var(--shadow);
       backdrop-filter:blur(16px);
       -webkit-backdrop-filter:blur(16px);
@@ -75,7 +76,7 @@
       flex-wrap:wrap;
     }
 
-    .brand-badge,.chip,.home-btn,.status-badge,.tier-badge,.action-badge,.perf-badge,.result-badge,.rank-pill{
+    .brand-badge,.chip,.home-btn,.status-badge,.tier-badge,.action-badge,.perf-badge{
       display:inline-flex;
       align-items:center;
       justify-content:center;
@@ -84,7 +85,7 @@
     .brand-badge{
       gap:8px;
       background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid var(--stroke);
       color:#f3e8ff;
       padding:8px 12px;
       border-radius:999px;
@@ -112,7 +113,7 @@
     .pill{
       padding:10px 12px;
       border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid var(--stroke);
       background:rgba(255,255,255,.06);
       color:var(--soft);
       font-size:12px;
@@ -159,7 +160,7 @@
       max-width:860px;
     }
 
-    .hero-side,.kpi-grid,.bottom-grid,.clan-grid,.top3-grid{
+    .hero-side,.kpi-grid,.bottom-grid{
       display:grid;
       gap:12px;
     }
@@ -170,7 +171,7 @@
       border-radius:18px;
       padding:14px;
       background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid var(--stroke);
     }
 
     .mini-stat-label,.kpi-label{
@@ -243,7 +244,7 @@
       width:100%;
       min-height:46px;
       border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid var(--stroke);
       background:rgba(255,255,255,.05);
       color:#fff;
       padding:0 14px;
@@ -265,7 +266,7 @@
 
     .select option{
       background:#2a1730;
-      color:#fff;
+      color:#ffffff;
     }
 
     .button{
@@ -292,9 +293,9 @@
       transform:none;
     }
 
-    .kpi-grid{grid-template-columns:repeat(8,minmax(0,1fr))}
-    .clan-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-    .top3-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .kpi-grid{
+      grid-template-columns:repeat(8,minmax(0,1fr));
+    }
 
     .kpi-card{
       min-height:118px;
@@ -324,7 +325,10 @@
     }
 
     .panel{overflow:hidden}
-    .panel-head{padding:16px 18px 0}
+
+    .panel-head{
+      padding:16px 18px 0;
+    }
 
     .panel-title{
       margin:0;
@@ -343,7 +347,7 @@
       min-height:32px;
       padding:0 12px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid var(--stroke);
       background:rgba(255,255,255,.06);
       color:var(--soft);
       font-size:11px;
@@ -355,149 +359,19 @@
     .chart-wrap{
       height:330px;
       border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid var(--stroke);
       background:rgba(255,255,255,.03);
       padding:10px;
     }
 
     .chart-wrap-wide{height:340px}
 
-    .clan-summary-box{
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.03);
-      padding:16px;
-    }
-
-    .clan-summary-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
-    }
-
-    .clan-stat{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      padding:14px;
-    }
-
-    .clan-stat-label{
-      color:var(--muted);
-      font-size:11px;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:.06em;
-      margin-bottom:8px;
-    }
-
-    .clan-stat-value{
-      font-size:24px;
-      font-weight:900;
-      color:#fff;
-      letter-spacing:-.04em;
-    }
-
-    .clan-stat-note{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
-    }
-
-    .rank-card{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      padding:14px;
-    }
-
-    .rank-card h4{
-      margin:0 0 8px;
-      font-size:14px;
-      font-weight:800;
-      color:#fff;
-    }
-
-    .rank-main{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:8px;
-    }
-
-    .rank-name{
-      font-size:18px;
-      font-weight:900;
-      line-height:1.2;
-    }
-
-    .rank-score{
-      font-size:20px;
-      font-weight:900;
-      white-space:nowrap;
-    }
-
-    .rank-meta{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
-    }
-
-    .rank-pill{
-      min-height:24px;
-      padding:0 10px;
-      border-radius:999px;
-      font-size:10px;
-      font-weight:800;
-      border:1px solid transparent;
-    }
-
-    .rank-1{
-      color:#2b1a00;
-      background:linear-gradient(135deg,#FFD700,#FFC300);
-      border-color:#FFD700;
-    }
-
-    .rank-2{
-      color:#1f2937;
-      background:linear-gradient(135deg,#C0C0C0,#E5E7EB);
-      border-color:#C0C0C0;
-    }
-
-    .rank-3{
-      color:#2b1406;
-      background:linear-gradient(135deg,#CD7F32,#E0A96D);
-      border-color:#CD7F32;
-    }
-
-    .result-badge{
-      min-height:28px;
-      padding:0 12px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.05em;
-      border:1px solid transparent;
-    }
-
-    .result-win{
-      color:#9ff0c7;
-      background:rgba(53,210,138,.14);
-      border-color:rgba(53,210,138,.24);
-    }
-
-    .result-loss{
-      color:#ffb6c0;
-      background:rgba(255,107,125,.12);
-      border-color:rgba(255,107,125,.24);
-    }
-	    .table-wrap{
+    .table-wrap,.rank-table-wrap{
       overflow:auto;
-      border-top:1px solid rgba(255,255,255,.10);
-      max-height:640px;
+      border-top:1px solid var(--stroke);
     }
+
+    .table-wrap{max-height:640px}
 
     table{
       width:100%;
@@ -529,7 +403,9 @@
       vertical-align:middle;
     }
 
-    tbody tr:hover{background:rgba(255,255,255,.04)}
+    tbody tr:hover{
+      background:rgba(255,255,255,.04);
+    }
 
     .name-wrap{
       display:flex;
@@ -625,13 +501,24 @@
       border-color:rgba(250,204,21,.24);
     }
 
+    .badge-green{
+      background:rgba(53,210,138,.14);
+      color:#9ff0c7;
+      border-color:rgba(53,210,138,.24);
+    }
+
     .badge-blue{
       background:rgba(192,132,252,.14);
       color:#e9d5ff;
       border-color:rgba(192,132,252,.24);
     }
 
-    .status-badge,.tier-badge,.action-badge,.perf-badge{
+    .badge-purple{
+      background:rgba(139,92,246,.14);
+      color:#d3c1ff;
+      border-color:rgba(139,92,246,.24);
+    }
+	    .status-badge,.tier-badge,.action-badge,.perf-badge{
       min-height:24px;
       padding:0 10px;
       border-radius:999px;
@@ -641,24 +528,96 @@
       border:1px solid transparent;
     }
 
-    .status-new{color:#ffe68a;background:rgba(250,204,21,.14);border-color:rgba(250,204,21,.24)}
-    .status-active{color:#9ff0c7;background:rgba(53,210,138,.14);border-color:rgba(53,210,138,.24)}
-    .status-returned{color:#e9d5ff;background:rgba(192,132,252,.14);border-color:rgba(192,132,252,.24)}
-    .status-baseline{color:#d8c4ff;background:rgba(139,92,246,.14);border-color:rgba(139,92,246,.24)}
+    .status-new{
+      color:#ffe68a;
+      background:rgba(250,204,21,.14);
+      border-color:rgba(250,204,21,.24);
+    }
 
-    .perf-ontarget{color:#9ff0c7;background:rgba(53,210,138,.14);border-color:rgba(53,210,138,.24)}
-    .perf-below{color:#ffb6c0;background:rgba(255,107,125,.12);border-color:rgba(255,107,125,.24)}
+    .status-active{
+      color:#9ff0c7;
+      background:rgba(53,210,138,.14);
+      border-color:rgba(53,210,138,.24);
+    }
 
-    .action-none{color:#9ff0c7;background:rgba(53,210,138,.14);border-color:rgba(53,210,138,.24)}
-    .action-monitor{color:#ffe68a;background:rgba(250,204,21,.14);border-color:rgba(250,204,21,.24)}
-    .action-required{color:#ffb6c0;background:rgba(255,107,125,.12);border-color:rgba(255,107,125,.24)}
+    .status-returned{
+      color:#e9d5ff;
+      background:rgba(192,132,252,.14);
+      border-color:rgba(192,132,252,.24);
+    }
 
-    .tier-top{color:#d3c1ff;background:rgba(139,92,246,.14);border-color:rgba(139,92,246,.24)}
-    .tier-consistent{color:#e9d5ff;background:rgba(192,132,252,.14);border-color:rgba(192,132,252,.24)}
-    .tier-attention{color:#ffe68a;background:rgba(250,204,21,.14);border-color:rgba(250,204,21,.24)}
-    .tier-risk{color:#ffb6c0;background:rgba(255,107,125,.12);border-color:rgba(255,107,125,.24)}
+    .status-baseline{
+      color:#d8c4ff;
+      background:rgba(139,92,246,.14);
+      border-color:rgba(139,92,246,.24);
+    }
 
-    .bottom-grid.two-panels{grid-template-columns:repeat(2,1fr)}
+    .perf-ontarget{
+      color:#9ff0c7;
+      background:rgba(53,210,138,.14);
+      border-color:rgba(53,210,138,.24);
+    }
+
+    .perf-below{
+      color:#ffb6c0;
+      background:rgba(255,107,125,.12);
+      border-color:rgba(255,107,125,.24);
+    }
+
+    .action-none{
+      color:#9ff0c7;
+      background:rgba(53,210,138,.14);
+      border-color:rgba(53,210,138,.24);
+    }
+
+    .action-monitor{
+      color:#ffe68a;
+      background:rgba(250,204,21,.14);
+      border-color:rgba(250,204,21,.24);
+    }
+
+    .action-required{
+      color:#ffb6c0;
+      background:rgba(255,107,125,.12);
+      border-color:rgba(255,107,125,.24);
+    }
+
+    .tier-top{
+      color:#d3c1ff;
+      background:rgba(139,92,246,.14);
+      border-color:rgba(139,92,246,.24);
+    }
+
+    .tier-consistent{
+      color:#e9d5ff;
+      background:rgba(192,132,252,.14);
+      border-color:rgba(192,132,252,.24);
+    }
+
+    .tier-attention{
+      color:#ffe68a;
+      background:rgba(250,204,21,.14);
+      border-color:rgba(250,204,21,.24);
+    }
+
+    .tier-risk{
+      color:#ffb6c0;
+      background:rgba(255,107,125,.12);
+      border-color:rgba(255,107,125,.24);
+    }
+
+    .bottom-grid.two-panels{
+      grid-template-columns:repeat(2,1fr);
+    }
+
+    .setup-box{
+      padding:16px;
+      border-radius:18px;
+      border:1px dashed rgba(255,255,255,.2);
+      background:rgba(255,255,255,.04);
+      color:var(--soft);
+      line-height:1.7;
+    }
 
     .back-to-top{
       position:fixed;
@@ -692,8 +651,6 @@
 
     @media(max-width:1400px){
       .status-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .clan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .top3-grid{grid-template-columns:1fr}
     }
 
     @media(max-width:1200px){
@@ -704,7 +661,6 @@
 
     @media(max-width:980px){
       .event-nav-grid{grid-template-columns:1fr 1fr}
-      .clan-summary-grid{grid-template-columns:1fr}
     }
 
     @media(max-width:900px){
@@ -714,7 +670,7 @@
 
     @media(max-width:820px){
       .hero-side{grid-template-columns:1fr 1fr}
-      .kpi-grid,.clan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .chart-wrap,.chart-wrap-wide{height:280px}
     }
 
@@ -724,7 +680,9 @@
         gap:10px;
       }
 
-      .compact-score{font-size:12px}
+      .compact-score{
+        font-size:12px;
+      }
     }
 
     @media(max-width:640px){
@@ -732,7 +690,7 @@
     }
 
     @media(max-width:560px){
-      .hero-side,.kpi-grid,.status-strip,.clan-grid{grid-template-columns:1fr}
+      .hero-side,.kpi-grid,.status-strip{grid-template-columns:1fr}
       .hero h1{font-size:28px}
       .back-to-top{
         right:12px;
@@ -769,7 +727,7 @@
           <h1>Trials of Olympus Performance Dashboard</h1>
           <p>
             Historical Trials of Olympus points analysis with player status tracking, underperformance monitoring,
-            repeat-offender visibility, top contributors, and full same-event clan ranking visibility.
+            repeat-offender visibility, top contributors, and event-to-event performance intelligence.
           </p>
         </div>
 
@@ -783,19 +741,19 @@
             <div class="mini-stat-value">Below 60K</div>
           </div>
           <div class="mini-stat">
-            <div class="mini-stat-label">Clan Outcome</div>
-            <div class="mini-stat-value" id="heroClanResult">Loading...</div>
+            <div class="mini-stat-label">Action KPI</div>
+            <div class="mini-stat-value">Repeat Underperformance</div>
           </div>
           <div class="mini-stat">
             <div class="mini-stat-label">Tracking</div>
-            <div class="mini-stat-value">Points + Clan Ranking</div>
+            <div class="mini-stat-value">Historical Comparison</div>
           </div>
         </div>
       </div>
     </section>
 
     <div class="notice glass">
-      <div><span class="dot"></span>This dashboard tracks event-by-event player contribution and ties it to the same event’s clan result row with both opponents.</div>
+      <div><span class="dot"></span>This dashboard tracks event-by-event contribution, identifies underperformance trends, and highlights consistency across the clan.</div>
       <div><span class="badge-success">Live Feed Linked</span></div>
     </div>
 
@@ -803,7 +761,7 @@
       <div class="filters-head">
         <div>
           <h2 class="section-title">Navigation & Filters</h2>
-          <p class="section-subtitle">Switch one event date and review both individual and clan performance for that same event</p>
+          <p class="section-subtitle">Switch events, search players, and review accountability trends</p>
         </div>
       </div>
 
@@ -827,84 +785,6 @@
           <label>Event</label>
           <button id="nextEventBtn" class="button nav-button">Next →</button>
         </div>
-      </div>
-    </section>
-
-    <section class="clan-grid">
-      <div class="kpi-card glass green">
-        <div class="kpi-label">Clan Result</div>
-        <div class="kpi-value" id="kpiClanResult">-</div>
-        <div class="kpi-note">Outcome for selected event</div>
-      </div>
-
-      <div class="kpi-card glass blue">
-        <div class="kpi-label">Clan Score</div>
-        <div class="kpi-value" id="kpiClanScore">0</div>
-        <div class="kpi-note">WoA score in selected event</div>
-      </div>
-
-      <div class="kpi-card glass gold">
-        <div class="kpi-label">2nd Place Clan</div>
-        <div class="kpi-value" id="kpiTopOpponent">-</div>
-        <div class="kpi-note">Nearest rival that event</div>
-      </div>
-
-      <div class="kpi-card glass purple">
-        <div class="kpi-label">Score Margin</div>
-        <div class="kpi-value" id="kpiScoreMargin">0</div>
-        <div class="kpi-note">WoA minus 2nd place</div>
-      </div>
-    </section>
-
-    <section class="panel glass">
-      <div class="panel-head">
-        <div>
-          <h3 class="panel-title">Clan Event Summary</h3>
-          <p class="panel-desc">Selected event WoA result, rank, participation, nearest rival, and both opponent results</p>
-        </div>
-        <div id="clanResultBadge" class="result-badge result-win">WIN</div>
-      </div>
-      <div class="panel-body">
-        <div class="clan-summary-box">
-          <div class="clan-summary-grid">
-            <div class="clan-stat">
-              <div class="clan-stat-label">Clan</div>
-              <div class="clan-stat-value" id="clanName">[WoA] Warriors of Asgard</div>
-              <div class="clan-stat-note">Selected event clan record</div>
-            </div>
-
-            <div class="clan-stat">
-              <div class="clan-stat-label">Rank & Participation</div>
-              <div class="clan-stat-value"><span id="clanRank">-</span> • <span id="clanParticipants">-</span></div>
-              <div class="clan-stat-note">Final rank and active members</div>
-            </div>
-
-            <div class="clan-stat">
-              <div class="clan-stat-label">2nd Place Score</div>
-              <div class="clan-stat-value" id="topOpponentScore">0</div>
-              <div class="clan-stat-note"><span id="topOpponentName">-</span></div>
-            </div>
-
-            <div class="clan-stat">
-              <div class="clan-stat-label">Event Margin</div>
-              <div class="clan-stat-value" id="eventMargin">0</div>
-              <div class="clan-stat-note">Difference between WoA and 2nd place</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel glass">
-      <div class="panel-head">
-        <div>
-          <h3 class="panel-title">Top 3 Clan Ranking</h3>
-          <p class="panel-desc">Full podium built from the selected event row: WoA, Opponent 1, and Opponent 2</p>
-        </div>
-        <div class="chip">Podium View</div>
-      </div>
-      <div class="panel-body">
-        <div class="top3-grid" id="top3Grid"></div>
       </div>
     </section>
 
@@ -962,7 +842,7 @@
       <div class="panel-head">
         <div>
           <h3 class="panel-title">Historical Points Trend</h3>
-          <p class="panel-desc">Total clan points across Trials of Olympus events</p>
+          <p class="panel-desc">Total clan points across tracked Trials of Olympus events</p>
         </div>
         <div class="chip">Trend View</div>
       </div>
@@ -977,7 +857,7 @@
       <div class="panel-head">
         <div>
           <h3 class="panel-title">Top 10 Contributors</h3>
-          <p class="panel-desc">Highest point contributors for selected event</p>
+          <p class="panel-desc">Highest points performers for selected event</p>
         </div>
         <div class="chip">Top Contributors</div>
       </div>
@@ -987,12 +867,11 @@
         </div>
       </div>
     </section>
-
-    <section class="table-card glass">
+	    <section class="table-card glass">
       <div class="panel-head">
         <div>
           <h3 class="panel-title">Player Event Analysis</h3>
-          <p class="panel-desc">Points, trend, performance status, streak, action, and contribution to clan result</p>
+          <p class="panel-desc">Points, trend, performance status, streak, action, status, and performance tier</p>
         </div>
         <div class="chip">Event Detail</div>
       </div>
@@ -1006,10 +885,10 @@
               <th>Change</th>
               <th>Change %</th>
               <th>Performance Status</th>
-              <th>Streak</th>
+              <th>Underperformance Streak</th>
               <th>Action</th>
               <th>Status</th>
-              <th>Tier</th>
+              <th>Performance Tier</th>
             </tr>
           </thead>
           <tbody id="analysisTable"></tbody>
@@ -1022,7 +901,7 @@
         <div class="panel-head">
           <div>
             <h3 class="panel-title">Underperforming Players</h3>
-            <p class="panel-desc">Below 60K contribution (affects clan strength)</p>
+            <p class="panel-desc">Below 60K contribution in selected event</p>
           </div>
           <span class="badge-pill badge-red">Below Target</span>
         </div>
@@ -1035,7 +914,7 @@
         <div class="panel-head">
           <div>
             <h3 class="panel-title">Repeat Underperformers</h3>
-            <p class="panel-desc">Players weakening consistency across events</p>
+            <p class="panel-desc">2+ consecutive events below minimum target</p>
           </div>
           <span class="badge-pill badge-yellow">Action List</span>
         </div>
@@ -1050,17 +929,17 @@
   <button id="backToTopBtn" class="back-to-top">↑</button>
 
   <script>
-      const RAW_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=1395127106&single=true&output=csv";
-    const EVENT_SUMMARY_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=342515609&single=true&output=csv";
-    const EVENT_ANALYSIS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=1326524715&single=true&output=csv";
-    const CLAN_RESULTS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=1235655669&single=true&output=csv";
+    // ⚠️ Replace these later with your Olympus Google Sheets CSV links
+    const RAW_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDG0mQNLhT5QpUh6AUe7JGwx8wTJL4OFvFC2OiqqY1FayfeI0-oJKIFN9REgw6hA/pub?gid=806060387&single=true&output=csv";
+    const EVENT_SUMMARY_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDG0mQNLhT5QpUh6AUe7JGwx8wTJL4OFvFC2OiqqY1FayfeI0-oJKIFN9REgw6hA/pub?gid=840456875&single=true&output=csv";
+    const EVENT_ANALYSIS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDG0mQNLhT5QpUh6AUe7JGwx8wTJL4OFvFC2OiqqY1FayfeI0-oJKIFN9REgw6hA/pub?gid=309374071&single=true&output=csv";
 
     let rawRows = [];
     let summaryRows = [];
     let analysisRows = [];
-    let clanRows = [];
 
     let selectedEvent = null;
+    let baselineEvent = null;
     let orderedEvents = [];
 
     let trendChart = null;
@@ -1127,32 +1006,49 @@
       return "";
     }
 
-    function num(v){
-      return Number(String(v || "0").replace(/,/g,"")) || 0;
+    function parseNumber(v){
+      if(v === null || v === undefined || v === "") return 0;
+      return Number(String(v).replace(/,/g,'')) || 0;
     }
 
-    function format(n){
-      const value = Number(n) || 0;
-      if(value >= 1000000) return (value / 1000000).toFixed(2).replace(/\.00$/,"") + "M";
-      if(value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/,"") + "K";
-      return value.toLocaleString();
+    function formatShort(num){
+      const n = Number(num) || 0;
+      if(n >= 1e6) return (n / 1e6).toFixed(2).replace(/\.00$/,'') + 'M';
+      if(n >= 1e3) return (n / 1e3).toFixed(2).replace(/\.00$/,'') + 'K';
+      return Math.round(n).toLocaleString();
     }
 
-    function set(id,val){
-      const el = document.getElementById(id);
-      if(el) el.textContent = val;
+    function formatSignedShort(num){
+      const n = Number(num) || 0;
+      if(n === 0) return '—';
+      return `${n > 0 ? '+' : ''}${formatShort(n)}`;
     }
 
-    function metricClass(value, hasPrevious = true){
-      if(!hasPrevious) return "metric-none";
-      if(value > 0) return "metric-pos";
-      if(value < 0) return "metric-neg";
-      return "metric-flat";
+    function formatPercent(num){
+      const n = Number(num);
+      if(!Number.isFinite(n)) return '—';
+      if(n === 0) return '—';
+      return `${n > 0 ? '+' : ''}${n.toFixed(1)}%`;
+    }
+
+    function safe(v){
+      return String(v || "").trim();
     }
 
     function initials(name){
-      const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
-      return parts.length ? parts.slice(0,2).map(p => p[0].toUpperCase()).join("") : "?";
+      const parts = safe(name).split(/\s+/).filter(Boolean);
+      return parts.length ? parts.slice(0,2).map(p => p[0].toUpperCase()).join('') : '?';
+    }
+	    function metricClass(value, hasPrevious = true){
+      if(!hasPrevious) return 'metric-none';
+      if(value > 0) return 'metric-pos';
+      if(value < 0) return 'metric-neg';
+      return 'metric-flat';
+    }
+
+    function setText(id, value){
+      const el = document.getElementById(id);
+      if(el) el.textContent = value;
     }
 
     function createNameCell(name){
@@ -1164,218 +1060,76 @@
       `;
     }
 
-    function fetchCsv(url){
-      const sep = url.includes("?") ? "&" : "?";
-      return fetch(url + sep + "_ts=" + Date.now())
-        .then(r => r.text())
-        .then(parseCSV);
+    function getPerformanceStatus(rawFlag, points){
+      const flag = safe(rawFlag).toUpperCase();
+      if(flag === 'FLAG') return 'Below Target';
+      if(flag === 'OK') return 'On Track';
+      return points < 60000 ? 'Below Target' : 'On Track';
     }
 
-    function normalizeClanName(name){
-      return String(name || "")
-        .toLowerCase()
-        .replace(/[\[\]]/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
+    function getPerformanceStatusClass(status){
+      return status === 'Below Target' ? 'perf-below' : 'perf-ontarget';
     }
 
-    function isWoaAlias(name){
-      const n = normalizeClanName(name);
-      return [
-        "woa",
-        "warriors of asgard",
-        "woariors of asgard",
-        "woa warriors of asgard"
-      ].includes(n);
+    function getAction(rawEnforcement, streak){
+      const enforcement = safe(rawEnforcement).toUpperCase();
+      const n = parseNumber(streak);
+
+      if(enforcement === 'SUMMON' || enforcement === 'ACTION REQUIRED') return 'Action Required';
+      if(n >= 2) return 'Action Required';
+      if(n === 1) return 'Monitor';
+      return 'No Action';
     }
 
-    function populateEvents(){
-      const eventSelect = document.getElementById("eventSelect");
-
-      orderedEvents = [...new Set(
-        summaryRows
-          .map(r => getValueByAliases(r,["Event_Date","Event Date","Date"]))
-          .filter(Boolean)
-      )].sort((a,b)=>new Date(a)-new Date(b));
-
-      eventSelect.innerHTML = orderedEvents
-        .map(d => `<option value="${d}">${d}</option>`)
-        .join("");
-
-      selectedEvent = orderedEvents[orderedEvents.length - 1] || null;
-      if(selectedEvent) eventSelect.value = selectedEvent;
-
-      updateEventNavButtons();
+    function getActionClass(action){
+      if(action === 'Action Required') return 'action-required';
+      if(action === 'Monitor') return 'action-monitor';
+      return 'action-none';
     }
 
-    function updateEventNavButtons(){
-      const idx = orderedEvents.indexOf(selectedEvent);
-      document.getElementById("prevEventBtn").disabled = idx <= 0;
-      document.getElementById("nextEventBtn").disabled = idx === -1 || idx >= orderedEvents.length - 1;
+    function getStreakLabel(streak){
+      const n = parseNumber(streak);
+      if(n <= 0) return '—';
+      if(n === 1) return '1 Event';
+      return `${n} Events`;
     }
 
-    function goToPreviousEvent(){
-      const idx = orderedEvents.indexOf(selectedEvent);
-      if(idx > 0){
-        selectedEvent = orderedEvents[idx - 1];
-        document.getElementById("eventSelect").value = selectedEvent;
-        updateEventNavButtons();
-        renderEvent();
-      }
+    function getMovementRaw(row){
+      return safe(getValueByAliases(row,['Movement','Status Movement','Status']));
     }
 
-    function goToNextEvent(){
-      const idx = orderedEvents.indexOf(selectedEvent);
-      if(idx < orderedEvents.length - 1){
-        selectedEvent = orderedEvents[idx + 1];
-        document.getElementById("eventSelect").value = selectedEvent;
-        updateEventNavButtons();
-        renderEvent();
-      }
+    function getEffectiveMovement(row){
+      const movement = getMovementRaw(row);
+      const eventDate = safe(getValueByAliases(row,['Event_Date','Event Date','Date']));
+
+      if(eventDate === baselineEvent) return 'Baseline';
+      if(['New Joiner','New Member'].includes(movement)) return 'New Member';
+      if(movement === 'Returned') return 'Returning Member';
+      if(['Existing','Active','Existing Member','Active Member'].includes(movement)) return 'Active Member';
+      return movement || 'Active Member';
     }
 
-    function getClanRowForEvent(eventDate){
-      return clanRows.find(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === eventDate);
+    function getMovementClass(movement){
+      if(movement === 'New Member') return 'status-new';
+      if(movement === 'Returning Member') return 'status-returned';
+      if(movement === 'Baseline') return 'status-baseline';
+      return 'status-active';
     }
 
-    function renderTrend(){
-      const ctx = document.getElementById("trendChart").getContext("2d");
-      if(trendChart) trendChart.destroy();
-
-      const data = [...summaryRows]
-        .filter(r => getValueByAliases(r,["Event_Date","Event Date","Date"]))
-        .sort((a,b)=>new Date(getValueByAliases(a,["Event_Date","Event Date","Date"])) - new Date(getValueByAliases(b,["Event_Date","Event Date","Date"])));
-
-      const gradient = ctx.createLinearGradient(0,0,0,320);
-      gradient.addColorStop(0,"rgba(192,132,252,.40)");
-      gradient.addColorStop(1,"rgba(192,132,252,.03)");
-
-      trendChart = new Chart(ctx,{
-        type:"line",
-        data:{
-          labels:data.map(d => getValueByAliases(d,["Event_Date","Event Date","Date"])),
-          datasets:[{
-            label:"Total Points",
-            data:data.map(d => num(getValueByAliases(d,["Total_Points","Total Points","Points Total"]))),
-            borderColor:"#e9d5ff",
-            backgroundColor:gradient,
-            fill:true,
-            tension:.35,
-            pointRadius:3,
-            pointHoverRadius:5,
-            pointBackgroundColor:"#f5e9ff",
-            pointBorderWidth:0
-          }]
-        },
-        options:{
-          responsive:true,
-          maintainAspectRatio:false,
-          plugins:{legend:{display:false}},
-          scales:{
-            x:{ticks:{color:"#e9d5ff"}},
-            y:{
-              ticks:{color:"#e9d5ff", callback:v => format(v)},
-              grid:{color:"rgba(255,255,255,.08)"}
-            }
-          }
-        }
-      });
-    }
-
-    function buildTop3FromClanRow(clanRow){
-      if(!clanRow) return [];
-
-      const mainClan = getValueByAliases(clanRow,["Clan","Clan_Name","Name"]) || "[WoA] Warriors of Asgard";
-      const mainScore = num(getValueByAliases(clanRow,["Score","Clan Score","WoA_Score"]));
-      const mainParticipants = getValueByAliases(clanRow,["Participants","Clan_Participants","Members"]) || "-";
-      const mainRank = num(getValueByAliases(clanRow,["Rank","Clan_Rank","Position"])) || 1;
-
-      const opp1Name = getValueByAliases(clanRow,["Opponent_1","Opponent1","Second_Clan","2nd Place Clan"]) || "-";
-      const opp1Score = num(getValueByAliases(clanRow,["Opponent_1_Score","Opponent1_Score","Second_Clan_Score","2nd Place Score"]));
-
-      const opp2Name = getValueByAliases(clanRow,["Opponent_2","Opponent2","Third_Clan","3rd Place Clan"]) || "-";
-      const opp2Score = num(getValueByAliases(clanRow,["Opponent_2_Score","Opponent2_Score","Third_Clan_Score","3rd Place Score"]));
-
-      const mainNorm = normalizeClanName(mainClan);
-      const seen = new Set();
-
-      return [
-        { rank: mainRank, clan: mainClan, score: mainScore, participants: mainParticipants },
-        { rank: 2, clan: opp1Name, score: opp1Score, participants: "-" },
-        { rank: 3, clan: opp2Name, score: opp2Score, participants: "-" }
-      ].filter(r => {
-        const n = normalizeClanName(r.clan);
-
-        if(!n || r.clan === "-") return false;
-        if(n !== mainNorm && isWoaAlias(r.clan)) return false;
-        if(seen.has(n)) return false;
-
-        seen.add(n);
-        return true;
-      });
-    }
-
-    function renderTop3Cards(rows){
-      const container = document.getElementById("top3Grid");
-
-      if(!rows.length){
-        container.innerHTML = `<div class="rank-card"><div class="rank-meta">No clan ranking data for this event.</div></div>`;
-        return;
-      }
-
-      container.innerHTML = rows.map(row => `
-        <div class="rank-card">
-          <div class="rank-main">
-            <div class="rank-name">${row.clan}</div>
-            <div class="rank-pill rank-${row.rank}">#${row.rank}</div>
-          </div>
-          <div class="rank-score">${format(row.score)}</div>
-          <div class="rank-meta">Participants: ${row.participants}${row.participants !== "-" ? "/100" : ""}</div>
-        </div>
-      `).join("");
-    }
-
-    function renderTopChart(rows){
-      const top = [...rows]
-        .sort((a,b)=>num(getValueByAliases(b,["Points","Points_Accumulated","Score"])) - num(getValueByAliases(a,["Points","Points_Accumulated","Score"])))
-        .slice(0,10);
-
-      const ctx = document.getElementById("topChart").getContext("2d");
-      if(topChart) topChart.destroy();
-
-      topChart = new Chart(ctx,{
-        type:"bar",
-        data:{
-          labels:top.map(r => getValueByAliases(r,["Player","Name","Player Name"])),
-          datasets:[{
-            label:"Points",
-            data:top.map(r => num(getValueByAliases(r,["Points","Points_Accumulated","Score"]))),
-            backgroundColor:["#f3e8ff","#e9d5ff","#d8b4fe","#c084fc","#a855f7","#9333ea","#7e22ce","#6b21a8","#581c87","#3b0764"],
-            borderRadius:10,
-            borderSkipped:false
-          }]
-        },
-        options:{
-          indexAxis:"y",
-          responsive:true,
-          maintainAspectRatio:false,
-          plugins:{legend:{display:false}},
-          scales:{
-            x:{
-              ticks:{color:"#f3e8ff", callback:v => format(v)},
-              grid:{color:"rgba(255,255,255,.08)"}
-            },
-            y:{
-              ticks:{color:"#f3e8ff"},
-              grid:{display:false}
-            }
-          }
-        }
-      });
+    function getTierClass(tier){
+      const t = safe(tier).toLowerCase();
+      if(t.includes('top')) return 'tier-top';
+      if(t.includes('consistent')) return 'tier-consistent';
+      if(t.includes('attention')) return 'tier-attention';
+      if(t.includes('risk') || t.includes('non')) return 'tier-risk';
+      return 'tier-consistent';
     }
 
     function renderList(id, items){
       const el = document.getElementById(id);
+
+      if(!el) return;
+
       if(!items.length){
         el.innerHTML = `
           <li>
@@ -1390,156 +1144,312 @@
       el.innerHTML = items.map(item => `
         <li>
           <span class="compact-name">${item.name}</span>
-          <span class="compact-score">${item.score}</span>
+          <span class="compact-score">${item.score || '—'}</span>
           <span class="badge-pill ${item.badgeClass}">${item.badge}</span>
         </li>
-      `).join("");
+      `).join('');
     }
-	    function renderEvent(){
-      const eventRows = analysisRows.filter(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === selectedEvent);
-      const searchTerm = String(document.getElementById("playerSearch").value || "").toLowerCase();
-      const filtered = eventRows.filter(r => !searchTerm || String(getValueByAliases(r,["Player","Name","Player Name"])).toLowerCase().includes(searchTerm));
+
+    function renderTrend(){
+      const ctx = document.getElementById('trendChart').getContext('2d');
+      if(trendChart) trendChart.destroy();
+
+      const data = [...summaryRows]
+        .filter(r => safe(getValueByAliases(r,['Event_Date','Event Date','Date'])))
+        .sort((a,b) => new Date(getValueByAliases(a,['Event_Date','Event Date','Date'])) - new Date(getValueByAliases(b,['Event_Date','Event Date','Date'])));
+
+      const gradient = ctx.createLinearGradient(0,0,0,320);
+      gradient.addColorStop(0,'rgba(192,132,252,.40)');
+      gradient.addColorStop(1,'rgba(192,132,252,.03)');
+
+      trendChart = new Chart(ctx,{
+        type:'line',
+        data:{
+          labels:data.map(d => getValueByAliases(d,['Event_Date','Event Date','Date'])),
+          datasets:[{
+            label:'Total Points',
+            data:data.map(d => parseNumber(getValueByAliases(d,['Total_Points','Total Points','Points Total']))),
+            borderColor:'#e9d5ff',
+            backgroundColor:gradient,
+            fill:true,
+            tension:.35,
+            pointRadius:3,
+            pointHoverRadius:5,
+            pointBackgroundColor:'#f5e9ff',
+            pointBorderWidth:0
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{
+            legend:{display:false},
+            tooltip:{
+              callbacks:{
+                label:ctx => ' ' + formatShort(ctx.raw)
+              }
+            }
+          },
+          scales:{
+            x:{ticks:{color:'#e9d5ff'}},
+            y:{
+              ticks:{
+                color:'#e9d5ff',
+                callback:value => formatShort(value)
+              },
+              grid:{color:'rgba(255,255,255,.08)'}
+            }
+          }
+        }
+      });
+    }
+
+    function renderTopChart(rows){
+      const top = [...rows]
+        .sort((a,b) => parseNumber(getValueByAliases(b,['Points','Points_Accumulated','Score'])) - parseNumber(getValueByAliases(a,['Points','Points_Accumulated','Score'])))
+        .slice(0,10);
+
+      const ctx = document.getElementById('topChart').getContext('2d');
+      if(topChart) topChart.destroy();
+
+      topChart = new Chart(ctx,{
+        type:'bar',
+        data:{
+          labels:top.map(r => getValueByAliases(r,['Player','Name','Player Name'])),
+          datasets:[{
+            label:'Points',
+            data:top.map(r => parseNumber(getValueByAliases(r,['Points','Points_Accumulated','Score']))),
+            backgroundColor:['#f3e8ff','#e9d5ff','#d8b4fe','#c084fc','#a855f7','#9333ea','#7e22ce','#6b21a8','#581c87','#3b0764'],
+            borderRadius:10,
+            borderSkipped:false
+          }]
+        },
+        options:{
+          indexAxis:'y',
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{
+            legend:{display:false},
+            tooltip:{
+              callbacks:{
+                label:ctx => ' ' + formatShort(ctx.raw)
+              }
+            }
+          },
+          scales:{
+            x:{
+              ticks:{
+                color:'#f3e8ff',
+                callback:value => formatShort(value)
+              },
+              grid:{color:'rgba(255,255,255,.08)'}
+            },
+            y:{
+              ticks:{color:'#f3e8ff'},
+              grid:{display:false}
+            }
+          }
+        }
+      });
+    }
+
+    function updateEventNavButtons(){
+      const prevBtn = document.getElementById('prevEventBtn');
+      const nextBtn = document.getElementById('nextEventBtn');
+
+      const idx = orderedEvents.indexOf(selectedEvent);
+      prevBtn.disabled = idx <= 0;
+      nextBtn.disabled = idx === -1 || idx >= orderedEvents.length - 1;
+    }
+
+    function goToPreviousEvent(){
+      const idx = orderedEvents.indexOf(selectedEvent);
+      if(idx > 0){
+        selectedEvent = orderedEvents[idx - 1];
+        document.getElementById('eventSelect').value = selectedEvent;
+        updateEventNavButtons();
+        renderEvent();
+      }
+    }
+
+    function goToNextEvent(){
+      const idx = orderedEvents.indexOf(selectedEvent);
+      if(idx < orderedEvents.length - 1){
+        selectedEvent = orderedEvents[idx + 1];
+        document.getElementById('eventSelect').value = selectedEvent;
+        updateEventNavButtons();
+        renderEvent();
+      }
+    }
+
+    function renderEvent(){
+      const eventRows = analysisRows.filter(r => safe(getValueByAliases(r,['Event_Date','Event Date','Date'])) === selectedEvent);
+      const searchTerm = safe(document.getElementById('playerSearch').value).toLowerCase();
+
+      const filtered = eventRows.filter(r =>
+        !searchTerm ||
+        safe(getValueByAliases(r,['Player','Name','Player Name'])).toLowerCase().includes(searchTerm)
+      );
 
       const totalPlayers = eventRows.length;
-      const totalPoints = eventRows.reduce((s,r)=>s + num(getValueByAliases(r,["Points","Points_Accumulated","Score"])),0);
+      const totalPoints = eventRows.reduce((s,r) => s + parseNumber(getValueByAliases(r,['Points','Points_Accumulated','Score'])), 0);
       const average = totalPlayers ? totalPoints / totalPlayers : 0;
-      const above = eventRows.filter(r => num(getValueByAliases(r,["Points","Points_Accumulated","Score"])) >= 60000).length;
-      const below = eventRows.filter(r => num(getValueByAliases(r,["Points","Points_Accumulated","Score"])) < 60000).length;
-      const repeat = eventRows.filter(r => num(getValueByAliases(r,["Below_Streak","Below Streak","Streak"])) >= 2).length;
-      const newMembers = eventRows.filter(r => getValueByAliases(r,["Movement","Status"]) === "New Member").length;
-      const returnedMembers = eventRows.filter(r => getValueByAliases(r,["Movement","Status"]) === "Returning Member").length;
 
-      set("latestEvent", selectedEvent || "No data");
-      set("kpiPlayers", totalPlayers.toLocaleString());
-      set("kpiTotalPoints", format(totalPoints));
-      set("kpiAverage", format(average));
-      set("kpiAbove", above.toLocaleString());
-      set("kpiBelow", below.toLocaleString());
-      set("kpiSummon", repeat.toLocaleString());
-      set("kpiNew", newMembers.toLocaleString());
-      set("kpiReturned", returnedMembers.toLocaleString());
+      const above = eventRows.filter(r => {
+        const points = parseNumber(getValueByAliases(r,['Points','Points_Accumulated','Score']));
+        return points >= 60000;
+      }).length;
 
-      const clanRow = getClanRowForEvent(selectedEvent);
+      const below = eventRows.filter(r => {
+        const points = parseNumber(getValueByAliases(r,['Points','Points_Accumulated','Score']));
+        return points < 60000;
+      }).length;
 
-      if(clanRow){
-        const top3 = buildTop3FromClanRow(clanRow);
+      const summon = eventRows.filter(r => {
+        const action = getAction(
+          getValueByAliases(r,['Enforcement','Action']),
+          getValueByAliases(r,['Below_Streak','Below Streak','Streak'])
+        );
+        return action === 'Action Required';
+      }).length;
 
-        const woaRow = top3.find(r => isWoaAlias(r.clan)) || top3[0] || null;
-        const secondRow = top3.find(r => !isWoaAlias(r.clan) && r.rank === 2) || top3.find(r => !isWoaAlias(r.clan)) || null;
+      const newMembers = eventRows.filter(r => getEffectiveMovement(r) === 'New Member').length;
+      const returnedMembers = eventRows.filter(r => getEffectiveMovement(r) === 'Returning Member').length;
 
-        const woaName = woaRow?.clan || "[WoA] Warriors of Asgard";
-        const woaScore = woaRow?.score || 0;
-        const woaRank = woaRow?.rank || 1;
-        const woaParticipants = woaRow?.participants || "-";
+      setText('latestEvent', selectedEvent || 'No data');
+      setText('kpiPlayers', totalPlayers.toLocaleString());
+      setText('kpiTotalPoints', formatShort(totalPoints));
+      setText('kpiAverage', formatShort(average));
+      setText('kpiAbove', above.toLocaleString());
+      setText('kpiBelow', below.toLocaleString());
+      setText('kpiSummon', summon.toLocaleString());
+      setText('kpiNew', newMembers.toLocaleString());
+      setText('kpiReturned', returnedMembers.toLocaleString());
 
-        const secondName = secondRow?.clan || "-";
-        const secondScore = secondRow?.score || 0;
+      const tbody = document.getElementById('analysisTable');
 
-        const margin = woaScore - secondScore;
-        const result = getValueByAliases(clanRow,["Result"]) || (woaRank === 1 ? "WIN" : "LOSS");
-
-        set("heroClanResult", result);
-        set("kpiClanResult", result);
-        set("kpiClanScore", format(woaScore));
-        set("kpiTopOpponent", secondName);
-        set("kpiScoreMargin", (margin > 0 ? "+" : "") + format(margin));
-
-        set("clanName", woaName);
-        set("clanRank", "#" + woaRank);
-        set("clanParticipants", woaParticipants + "/100");
-        set("topOpponentName", secondName);
-        set("topOpponentScore", format(secondScore));
-        set("eventMargin", (margin > 0 ? "+" : "") + format(margin));
-
-        const badge = document.getElementById("clanResultBadge");
-        badge.textContent = result;
-        badge.className = "result-badge " + (String(result).toUpperCase() === "WIN" ? "result-win" : "result-loss");
-
-        renderTop3Cards(top3);
-      } else {
-        set("heroClanResult", "No data");
-        set("kpiClanResult", "-");
-        set("kpiClanScore", "0");
-        set("kpiTopOpponent", "-");
-        set("kpiScoreMargin", "0");
-        set("clanName", "No data");
-        set("clanRank", "-");
-        set("clanParticipants", "-");
-        set("topOpponentName", "-");
-        set("topOpponentScore", "0");
-        set("eventMargin", "0");
-        document.getElementById("top3Grid").innerHTML = `<div class="rank-card"><div class="rank-meta">No clan ranking data for this event.</div></div>`;
-
-        const badge = document.getElementById("clanResultBadge");
-        badge.textContent = "NO DATA";
-        badge.className = "result-badge result-loss";
-      }
-
-      document.getElementById("analysisTable").innerHTML = filtered
-        .sort((a,b)=>num(getValueByAliases(b,["Points","Points_Accumulated","Score"])) - num(getValueByAliases(a,["Points","Points_Accumulated","Score"])))
+      tbody.innerHTML = filtered
+        .sort((a,b) => parseNumber(getValueByAliases(b,['Points','Points_Accumulated','Score'])) - parseNumber(getValueByAliases(a,['Points','Points_Accumulated','Score'])))
         .map(r => {
-          const player = getValueByAliases(r,["Player","Name","Player Name"]);
-          const points = num(getValueByAliases(r,["Points","Points_Accumulated","Score"]));
-          const prev = num(getValueByAliases(r,["Prev_Points","Prev Points","Previous Points"]));
+          const player = safe(getValueByAliases(r,['Player','Name','Player Name']));
+          const points = parseNumber(getValueByAliases(r,['Points','Points_Accumulated','Score']));
+          const prev = parseNumber(getValueByAliases(r,['Prev_Points','Previous_Points','Prev Points','Previous Points']));
           const hasPrevious = prev > 0;
-          const change = hasPrevious ? points - prev : 0;
-          const pct = hasPrevious ? ((points - prev) / prev) * 100 : null;
-          const status = points < 60000 ? "Below Target" : "On Track";
-          const streak = num(getValueByAliases(r,["Below_Streak","Below Streak","Streak"]));
-          const action = streak >= 2 ? "Action Required" : (streak === 1 ? "Monitor" : "No Action");
-          const movement = getValueByAliases(r,["Movement","Status"]) || "Active Member";
-          const tier = getValueByAliases(r,["Tier","Category"]) || "Consistent";
+
+          const change = hasPrevious ? (points - prev) : 0;
+          const pct = hasPrevious ? (((points - prev) / prev) * 100) : null;
+
+          const status = getPerformanceStatus(getValueByAliases(r,['Flag']), points);
+          const streakRaw = getValueByAliases(r,['Below_Streak','Below Streak','Streak']);
+          const streakLabel = getStreakLabel(streakRaw);
+          const action = getAction(getValueByAliases(r,['Enforcement','Action']), streakRaw);
+          const movement = getEffectiveMovement(r);
+          const tier = safe(getValueByAliases(r,['Tier','Category'])) || 'Consistent';
+
+          const rowClass = tier === 'Top Performer' ? 'highlight-top' : '';
 
           return `
-            <tr class="${tier === "Top Performer" ? "highlight-top" : ""}">
+            <tr class="${rowClass}">
               <td>${createNameCell(player)}</td>
-              <td>${format(points)}</td>
-              <td>${hasPrevious ? format(prev) : "—"}</td>
-              <td class="${metricClass(change, hasPrevious)}">${hasPrevious ? ((change > 0 ? "+" : "") + format(change)) : "—"}</td>
-              <td class="${pct === null ? "metric-none" : metricClass(pct, true)}">${pct === null ? "—" : `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%`}</td>
-              <td><span class="perf-badge ${status === "Below Target" ? "perf-below" : "perf-ontarget"}">${status}</span></td>
-              <td>${streak > 0 ? `${streak} Event${streak > 1 ? "s" : ""}` : "—"}</td>
-              <td><span class="action-badge ${action === "Action Required" ? "action-required" : action === "Monitor" ? "action-monitor" : "action-none"}">${action}</span></td>
-              <td><span class="status-badge ${movement === "New Member" ? "status-new" : movement === "Returning Member" ? "status-returned" : movement === "Baseline" ? "status-baseline" : "status-active"}">${movement}</span></td>
-              <td><span class="tier-badge ${tier === "Top Performer" ? "tier-top" : tier === "Needs Attention" ? "tier-attention" : tier === "Risk" ? "tier-risk" : "tier-consistent"}">${tier}</span></td>
+              <td>${formatShort(points)}</td>
+              <td>${hasPrevious ? formatShort(prev) : '—'}</td>
+              <td class="${metricClass(change, hasPrevious)}">${hasPrevious ? formatSignedShort(change) : '—'}</td>
+              <td class="${pct === null ? 'metric-none' : metricClass(pct, true)}">${pct === null ? '—' : formatPercent(pct)}</td>
+              <td><span class="perf-badge ${getPerformanceStatusClass(status)}">${status}</span></td>
+              <td>${streakLabel}</td>
+              <td><span class="action-badge ${getActionClass(action)}">${action}</span></td>
+              <td><span class="status-badge ${getMovementClass(movement)}">${movement}</span></td>
+              <td><span class="tier-badge ${getTierClass(tier)}">${tier}</span></td>
             </tr>
           `;
-        }).join("");
+        }).join('');
 
       renderTopChart(eventRows);
 
-      renderList("flaggedList",
+      renderList(
+        'flaggedList',
         eventRows
-          .filter(r => num(getValueByAliases(r,["Points","Points_Accumulated","Score"])) < 60000)
-          .sort((a,b)=>num(getValueByAliases(b,["Points","Points_Accumulated","Score"])) - num(getValueByAliases(a,["Points","Points_Accumulated","Score"])))
+          .filter(r => parseNumber(getValueByAliases(r,['Points','Points_Accumulated','Score'])) < 60000)
+          .sort((a,b) => parseNumber(getValueByAliases(b,['Points','Points_Accumulated','Score'])) - parseNumber(getValueByAliases(a,['Points','Points_Accumulated','Score'])))
           .map(r => ({
-            name:getValueByAliases(r,["Player","Name","Player Name"]),
-            score:format(num(getValueByAliases(r,["Points","Points_Accumulated","Score"]))),
-            badge:"Below Target",
-            badgeClass:"badge-red"
+            name: safe(getValueByAliases(r,['Player','Name','Player Name'])),
+            score: formatShort(parseNumber(getValueByAliases(r,['Points','Points_Accumulated','Score']))),
+            badge: 'Below Target',
+            badgeClass: 'badge-red'
           }))
       );
 
-      renderList("summonList",
+      renderList(
+        'summonList',
         eventRows
-          .filter(r => num(getValueByAliases(r,["Below_Streak","Below Streak","Streak"])) >= 2)
-          .sort((a,b)=>num(getValueByAliases(b,["Below_Streak","Below Streak","Streak"])) - num(getValueByAliases(a,["Below_Streak","Below Streak","Streak"])))
+          .filter(r => getAction(
+            getValueByAliases(r,['Enforcement','Action']),
+            getValueByAliases(r,['Below_Streak','Below Streak','Streak'])
+          ) === 'Action Required')
+          .sort((a,b) => parseNumber(getValueByAliases(b,['Below_Streak','Below Streak','Streak'])) - parseNumber(getValueByAliases(a,['Below_Streak','Below Streak','Streak'])))
           .map(r => ({
-            name:getValueByAliases(r,["Player","Name","Player Name"]),
-            score:`${num(getValueByAliases(r,["Below_Streak","Below Streak","Streak"]))} Events`,
-            badge:"Action Required",
-            badgeClass:"badge-yellow"
+            name: safe(getValueByAliases(r,['Player','Name','Player Name'])),
+            score: getStreakLabel(getValueByAliases(r,['Below_Streak','Below Streak','Streak'])),
+            badge: 'Action Required',
+            badgeClass: 'badge-yellow'
           }))
       );
+    }
+
+    function populateEvents(){
+      const eventSelect = document.getElementById('eventSelect');
+
+      orderedEvents = [...new Set(
+        summaryRows
+          .map(r => safe(getValueByAliases(r,['Event_Date','Event Date','Date'])))
+          .filter(Boolean)
+      )].sort((a,b) => new Date(a) - new Date(b));
+
+      baselineEvent = orderedEvents[0] || null;
+
+      eventSelect.innerHTML = orderedEvents
+        .map(e => `<option value="${e}">${e}</option>`)
+        .join('');
+
+      selectedEvent = orderedEvents[orderedEvents.length - 1] || null;
+
+      if(selectedEvent){
+        eventSelect.value = selectedEvent;
+      }
+
+      updateEventNavButtons();
+    }
+
+    async function fetchCsv(url){
+      url = String(url || '').trim();
+      const response = await fetch(url + (url.includes('?') ? '&' : '?') + '_ts=' + Date.now());
+
+      if(!response.ok){
+        throw new Error(`Failed to load ${url}`);
+      }
+
+      return parseCSV(await response.text());
+    }
+
+    function hasPlaceholders(){
+      return [RAW_URL, EVENT_SUMMARY_URL, EVENT_ANALYSIS_URL]
+        .some(url => url.includes('PASTE_OLYMPUS'));
     }
 
     async function loadData(){
       try{
-        [rawRows, summaryRows, analysisRows, clanRows] = await Promise.all([
+        if(hasPlaceholders()){
+          setText('latestEvent','Setup needed');
+          document.getElementById('analysisTable').innerHTML = `<tr><td colspan="10">Replace the three Olympus CSV URLs in the script section, then reload.</td></tr>`;
+          renderList('flaggedList', []);
+          renderList('summonList', []);
+          return;
+        }
+
+        [rawRows, summaryRows, analysisRows] = await Promise.all([
           fetchCsv(RAW_URL),
           fetchCsv(EVENT_SUMMARY_URL),
-          fetchCsv(EVENT_ANALYSIS_URL),
-          fetchCsv(CLAN_RESULTS_URL)
+          fetchCsv(EVENT_ANALYSIS_URL)
         ]);
 
         populateEvents();
@@ -1547,30 +1457,32 @@
         renderEvent();
       } catch(error){
         console.error(error);
-        set("latestEvent","Load failed");
-        document.getElementById("analysisTable").innerHTML = `<tr><td colspan="10">${error.message}</td></tr>`;
+        setText('latestEvent','Load failed');
+        document.getElementById('analysisTable').innerHTML = `<tr><td colspan="10">${error.message}</td></tr>`;
       }
     }
 
-    document.getElementById("eventSelect").addEventListener("change", e => {
+    document.getElementById('eventSelect').addEventListener('change', e => {
       selectedEvent = e.target.value;
       updateEventNavButtons();
       renderEvent();
     });
 
-    document.getElementById("playerSearch").addEventListener("input", renderEvent);
-    document.getElementById("prevEventBtn").addEventListener("click", goToPreviousEvent);
-    document.getElementById("nextEventBtn").addEventListener("click", goToNextEvent);
+    document.getElementById('playerSearch').addEventListener('input', renderEvent);
+    document.getElementById('prevEventBtn').addEventListener('click', goToPreviousEvent);
+    document.getElementById('nextEventBtn').addEventListener('click', goToNextEvent);
 
-    const btn = document.getElementById("backToTopBtn");
-    window.addEventListener("scroll", () => {
-      if(window.scrollY > 300) btn.classList.add("show");
-      else btn.classList.remove("show");
+    const btn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 300) btn.classList.add('show');
+      else btn.classList.remove('show');
     });
 
-    btn.addEventListener("click", () => window.scrollTo({top:0, behavior:"smooth"}));
+    btn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
 
     loadData();
   </script>
 </body>
 </html>
+	
+	

@@ -457,6 +457,7 @@
     .rank-1{color:#9ff0c7;background:rgba(53,210,138,.14);border-color:rgba(53,210,138,.24)}
     .rank-2{color:#ffe68a;background:rgba(250,204,21,.14);border-color:rgba(250,204,21,.24)}
     .rank-3{color:#e9d5ff;background:rgba(192,132,252,.14);border-color:rgba(192,132,252,.24)}
+	
 	    .result-badge{
       min-height:28px;
       padding:0 12px;
@@ -781,7 +782,7 @@
     </section>
 
     <div class="notice glass">
-      <div><span class="dot"></span>This dashboard tracks event-by-event player contribution and ties it to the same event’s full clan ranking board.</div>
+      <div><span class="dot"></span>This dashboard tracks event-by-event player contribution and ties it to the same event’s clan result row with both opponents.</div>
       <div><span class="badge-success">Live Feed Linked</span></div>
     </div>
 
@@ -789,7 +790,7 @@
       <div class="filters-head">
         <div>
           <h2 class="section-title">Navigation & Filters</h2>
-          <p class="section-subtitle">Switch one event date and review both individual and full clan ranking performance for that same event</p>
+          <p class="section-subtitle">Switch one event date and review both individual and clan performance for that same event</p>
         </div>
       </div>
 
@@ -845,7 +846,7 @@
       <div class="panel-head">
         <div>
           <h3 class="panel-title">Clan Event Summary</h3>
-          <p class="panel-desc">Selected event WoA result, rank, participation, nearest rival, and full podium view</p>
+          <p class="panel-desc">Selected event WoA result, rank, participation, nearest rival, and both opponent results</p>
         </div>
         <div id="clanResultBadge" class="result-badge result-win">WIN</div>
       </div>
@@ -884,7 +885,7 @@
       <div class="panel-head">
         <div>
           <h3 class="panel-title">Top 3 Clan Ranking</h3>
-          <p class="panel-desc">Full podium for the selected Trials of Olympus event</p>
+          <p class="panel-desc">Full podium built from the selected event row: WoA, Opponent 1, and Opponent 2</p>
         </div>
         <div class="chip">Podium View</div>
       </div>
@@ -947,7 +948,7 @@
       <div class="panel-head">
         <div>
           <h3 class="panel-title">Clan Ranking Comparison</h3>
-          <p class="panel-desc">Selected event comparison across the top 3 ranked clans</p>
+          <p class="panel-desc">Selected event comparison across WoA, 2nd place, and 3rd place clans</p>
         </div>
         <div class="chip">Event Comparison</div>
       </div>
@@ -1217,14 +1218,8 @@
       }
     }
 
-    function getClanRowsForEvent(eventDate){
-      return clanRows
-        .filter(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === eventDate)
-        .sort((a,b) => {
-          const ra = num(getValueByAliases(a,["Rank","Clan_Rank","Position"]));
-          const rb = num(getValueByAliases(b,["Rank","Clan_Rank","Position"]));
-          return ra - rb;
-        });
+    function getClanRowForEvent(eventDate){
+      return clanRows.find(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === eventDate);
     }
 
     function renderTrend(){
@@ -1270,19 +1265,38 @@
         }
       });
     }
-	    function renderClanChart(rows){
+	    function buildTop3FromClanRow(clanRow){
+      if(!clanRow) return [];
+
+      const mainClan = getValueByAliases(clanRow,["Clan","Clan_Name","Name"]) || "[WoA] Warriors of Asgard";
+      const mainScore = num(getValueByAliases(clanRow,["Score","Clan Score","WoA_Score"]));
+      const mainParticipants = getValueByAliases(clanRow,["Participants","Clan_Participants","Members"]) || "-";
+      const mainRank = num(getValueByAliases(clanRow,["Rank","Clan_Rank","Position"])) || 1;
+
+      const opp1Name = getValueByAliases(clanRow,["Opponent_1","Opponent1","Second_Clan","2nd Place Clan"]) || "-";
+      const opp1Score = num(getValueByAliases(clanRow,["Opponent_1_Score","Opponent1_Score","Second_Clan_Score","2nd Place Score"]));
+
+      const opp2Name = getValueByAliases(clanRow,["Opponent_2","Opponent2","Third_Clan","3rd Place Clan"]) || "-";
+      const opp2Score = num(getValueByAliases(clanRow,["Opponent_2_Score","Opponent2_Score","Third_Clan_Score","3rd Place Score"]));
+
+      return [
+        { rank: mainRank, clan: mainClan, score: mainScore, participants: mainParticipants },
+        { rank: 2, clan: opp1Name, score: opp1Score, participants: "-" },
+        { rank: 3, clan: opp2Name, score: opp2Score, participants: "-" }
+      ].filter(r => r.clan && r.clan !== "-");
+    }
+
+    function renderClanChart(rows){
       const ctx = document.getElementById("clanChart").getContext("2d");
       if(clanChart) clanChart.destroy();
-
-      const top3 = rows.slice(0,3);
 
       clanChart = new Chart(ctx,{
         type:"bar",
         data:{
-          labels:top3.map(r => getValueByAliases(r,["Clan","Clan_Name","Name"])),
+          labels:rows.map(r => r.clan),
           datasets:[{
             label:"Score",
-            data:top3.map(r => num(getValueByAliases(r,["Score","Clan Score","WoA_Score"]))),
+            data:rows.map(r => r.score),
             backgroundColor:["#c084fc","#ffb347","#35d28a"],
             borderRadius:10,
             borderSkipped:false
@@ -1305,30 +1319,22 @@
 
     function renderTop3Cards(rows){
       const container = document.getElementById("top3Grid");
-      const top3 = rows.slice(0,3);
 
-      if(!top3.length){
+      if(!rows.length){
         container.innerHTML = `<div class="rank-card"><div class="rank-meta">No clan ranking data for this event.</div></div>`;
         return;
       }
 
-      container.innerHTML = top3.map(row => {
-        const rank = num(getValueByAliases(row,["Rank","Clan_Rank","Position"])) || "-";
-        const clan = getValueByAliases(row,["Clan","Clan_Name","Name"]) || "-";
-        const score = num(getValueByAliases(row,["Score","Clan Score","WoA_Score"]));
-        const participants = getValueByAliases(row,["Participants","Clan_Participants","Members"]) || "-";
-
-        return `
-          <div class="rank-card">
-            <div class="rank-main">
-              <div class="rank-name">${clan}</div>
-              <div class="rank-pill rank-${rank}">#${rank}</div>
-            </div>
-            <div class="rank-score">${format(score)}</div>
-            <div class="rank-meta">Participants: ${participants}/100</div>
+      container.innerHTML = rows.map(row => `
+        <div class="rank-card">
+          <div class="rank-main">
+            <div class="rank-name">${row.clan}</div>
+            <div class="rank-pill rank-${row.rank}">#${row.rank}</div>
           </div>
-        `;
-      }).join("");
+          <div class="rank-score">${format(row.score)}</div>
+          <div class="rank-meta">Participants: ${row.participants}${row.participants !== "-" ? "/100" : ""}</div>
+        </div>
+      `).join("");
     }
 
     function renderTopChart(rows){
@@ -1416,45 +1422,38 @@
       set("kpiNew", newMembers.toLocaleString());
       set("kpiReturned", returnedMembers.toLocaleString());
 
-      const clanEventRows = getClanRowsForEvent(selectedEvent);
+      const clanRow = getClanRowForEvent(selectedEvent);
 
-      if(clanEventRows.length){
-        const top3 = clanEventRows.slice(0,3);
-        const woaRow = top3.find(r =>
-          String(getValueByAliases(r,["Clan","Clan_Name","Name"])).toLowerCase().includes("woa")
-        ) || top3[0];
+      if(clanRow){
+        const top3 = buildTop3FromClanRow(clanRow);
 
-        const woaName = getValueByAliases(woaRow,["Clan","Clan_Name","Name"]) || "[WoA] Warriors of Asgard";
-        const woaScore = num(getValueByAliases(woaRow,["Score","Clan Score","WoA_Score"]));
-        const woaRank = getValueByAliases(woaRow,["Rank","Clan_Rank","Position"]) || "-";
-        const woaParticipants = getValueByAliases(woaRow,["Participants","Clan_Participants","Members"]) || "-";
+        const woaName = top3[0]?.clan || "[WoA] Warriors of Asgard";
+        const woaScore = top3[0]?.score || 0;
+        const woaRank = top3[0]?.rank || 1;
+        const woaParticipants = top3[0]?.participants || "-";
 
-        const secondRow = top3.find(r =>
-          num(getValueByAliases(r,["Rank","Clan_Rank","Position"])) === 2
-        ) || top3[1];
-
-        const secondName = secondRow ? getValueByAliases(secondRow,["Clan","Clan_Name","Name"]) : "-";
-        const secondScore = secondRow ? num(getValueByAliases(secondRow,["Score","Clan Score","WoA_Score"])) : 0;
+        const secondName = top3[1]?.clan || "-";
+        const secondScore = top3[1]?.score || 0;
 
         const margin = woaScore - secondScore;
-        const result = num(woaRank) === 1 ? "WIN" : "LOSS";
+        const result = getValueByAliases(clanRow,["Result"]) || (woaRank === 1 ? "WIN" : "LOSS");
 
         set("heroClanResult", result);
         set("kpiClanResult", result);
         set("kpiClanScore", format(woaScore));
-        set("kpiTopOpponent", secondName || "-");
+        set("kpiTopOpponent", secondName);
         set("kpiScoreMargin", (margin > 0 ? "+" : "") + format(margin));
 
         set("clanName", woaName);
         set("clanRank", "#" + woaRank);
         set("clanParticipants", woaParticipants + "/100");
-        set("topOpponentName", secondName || "-");
+        set("topOpponentName", secondName);
         set("topOpponentScore", format(secondScore));
         set("eventMargin", (margin > 0 ? "+" : "") + format(margin));
 
         const badge = document.getElementById("clanResultBadge");
         badge.textContent = result;
-        badge.className = "result-badge " + (result === "WIN" ? "result-win" : "result-loss");
+        badge.className = "result-badge " + (String(result).toUpperCase() === "WIN" ? "result-win" : "result-loss");
 
         renderTop3Cards(top3);
         renderClanChart(top3);

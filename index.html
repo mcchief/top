@@ -479,6 +479,16 @@
       flex:0 0 36px;
     }
 
+    .player-link{
+      cursor:pointer;
+      color:#fdf4ff;
+      font-weight:700;
+    }
+
+    .player-link:hover{
+      color:#e9d5ff;
+    }
+
     .metric-pos{color:#61e29d;font-weight:800}
     .metric-neg{color:#ff7f8f;font-weight:800}
     .metric-flat{color:#c6d3ea;font-weight:800}
@@ -619,6 +629,155 @@
       transform:translateY(0);
     }
 
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(9,4,13,.72);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      z-index:2000;
+      padding:16px;
+    }
+
+    .modal.show{
+      display:flex;
+    }
+
+    .modal-card{
+      width:min(1100px,100%);
+      max-height:90vh;
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg,rgba(40,21,51,.96),rgba(23,12,31,.96));
+      box-shadow:0 24px 60px rgba(0,0,0,.45);
+    }
+
+    .modal-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      padding:18px 20px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .modal-title{
+      margin:0;
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .modal-subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .modal-close{
+      min-width:42px;
+      height:42px;
+      border:none;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:22px;
+      font-weight:900;
+      color:#fff;
+      background:linear-gradient(135deg,rgba(192,132,252,.22),rgba(168,85,247,.18));
+      border:1px solid rgba(192,132,252,.25);
+    }
+
+    .modal-body{
+      padding:16px 20px 20px;
+      overflow:auto;
+      max-height:calc(90vh - 90px);
+    }
+
+    .history-kpis{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .history-kpi{
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .history-kpi-label{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    .history-kpi-value{
+      margin-top:10px;
+      font-size:24px;
+      font-weight:900;
+      color:#fff;
+      letter-spacing:-.03em;
+    }
+
+    .history-chart-wrap{
+      height:260px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      padding:10px;
+      margin-bottom:14px;
+    }
+
+    .history-table-wrap{
+      overflow:auto;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+    }
+
+    .history-table{
+      width:100%;
+      min-width:980px;
+      border-collapse:collapse;
+    }
+
+    .history-table thead th{
+      position:sticky;
+      top:0;
+      z-index:1;
+      background:#251332;
+      color:#f3e8ff;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      text-align:left;
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      white-space:nowrap;
+    }
+
+    .history-table tbody td{
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      font-size:13px;
+      color:#fdf4ff;
+      white-space:nowrap;
+    }
+
+    .history-empty{
+      padding:24px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
     @media(max-width:1400px){
       .status-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
       .clan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -638,6 +797,7 @@
     @media(max-width:900px){
       .status-strip{grid-template-columns:1fr 1fr}
       .home-btn{width:100%}
+      .history-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
 
     @media(max-width:820px){
@@ -651,7 +811,6 @@
         grid-template-columns:minmax(0,1fr) 90px 130px;
         gap:10px;
       }
-
       .compact-score{font-size:12px}
     }
 
@@ -660,7 +819,7 @@
     }
 
     @media(max-width:560px){
-      .hero-side,.kpi-grid,.status-strip,.clan-grid{grid-template-columns:1fr}
+      .hero-side,.kpi-grid,.status-strip,.clan-grid,.history-kpis{grid-template-columns:1fr}
       .hero h1{font-size:28px}
       .back-to-top{
         right:12px;
@@ -936,7 +1095,68 @@
 
   </div>
 
-  <button id="backToTopBtn" class="back-to-top">↑</button>
+  <div id="playerHistoryModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3 id="historyPlayerName" class="modal-title">Player History</h3>
+          <p class="modal-subtitle">Previous Trials of Olympus results, event positions, and cumulative points</p>
+        </div>
+        <button id="closePlayerHistoryModal" class="modal-close" type="button" aria-label="Close">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="history-kpis">
+          <div class="history-kpi">
+            <div class="history-kpi-label">Events Recorded</div>
+            <div id="historyEventCount" class="history-kpi-value">0</div>
+          </div>
+          <div class="history-kpi">
+            <div class="history-kpi-label">Cumulative Points</div>
+            <div id="historyCumulativePoints" class="history-kpi-value">0</div>
+          </div>
+          <div class="history-kpi">
+            <div class="history-kpi-label">Best Position</div>
+            <div id="historyBestPosition" class="history-kpi-value">—</div>
+          </div>
+          <div class="history-kpi">
+            <div class="history-kpi-label">Latest Points</div>
+            <div id="historyLatestPoints" class="history-kpi-value">0</div>
+          </div>
+        </div>
+
+        <div class="history-chart-wrap">
+          <canvas id="playerHistoryChart"></canvas>
+        </div>
+
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Event Date</th>
+                <th>Position</th>
+                <th>Points</th>
+                <th>Prev Points</th>
+                <th>Change</th>
+                <th>Change %</th>
+                <th>Cumulative Points</th>
+                <th>Status</th>
+                <th>Tier</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="playerHistoryTable"></tbody>
+          </table>
+        </div>
+
+        <div id="playerHistoryEmpty" class="history-empty" style="display:none;">
+          No history found for this player.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button id="backToTopBtn" class="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
 
   <script>
     const RAW_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSjf62NX10oQmqkEOODctsrgWfPiZriD8mCqKUZlLUY1Jo2Bq_xufhzTJXiaIR2Yg/pub?gid=1395127106&single=true&output=csv";
@@ -951,9 +1171,11 @@
 
     let selectedEvent = null;
     let orderedEvents = [];
+    let baselineEvent = null;
 
     let trendChart = null;
     let topChart = null;
+    let playerHistoryChart = null;
 
     function parseCSVLine(line){
       const result = [];
@@ -1022,9 +1244,22 @@
 
     function format(n){
       const value = Number(n) || 0;
+      if(value >= 1000000000) return (value / 1000000000).toFixed(2).replace(/\.00$/,"") + "B";
       if(value >= 1000000) return (value / 1000000).toFixed(2).replace(/\.00$/,"") + "M";
       if(value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/,"") + "K";
       return value.toLocaleString();
+    }
+
+    function formatSigned(n){
+      const value = Number(n) || 0;
+      if(value === 0) return "—";
+      return `${value > 0 ? "+" : ""}${format(value)}`;
+    }
+
+    function formatPct(n){
+      if(n === null || !Number.isFinite(n)) return "—";
+      if(n === 0) return "—";
+      return `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
     }
 
     function set(id,val){
@@ -1044,13 +1279,16 @@
       return parts.length ? parts.slice(0,2).map(p => p[0].toUpperCase()).join("") : "?";
     }
 
-    function createNameCell(name){
-      return `
-        <div class="name-wrap">
-          <div class="avatar">${initials(name)}</div>
-          <div>${name}</div>
-        </div>
-      `;
+    function escapeJsString(str){
+      return String(str || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, " ")
+        .replace(/\r/g, " ");
+    }
+
+    function safe(v){
+      return String(v || "").trim();
     }
 
     function fetchCsv(url){
@@ -1078,6 +1316,60 @@
       ].includes(n);
     }
 
+    function getMovementRaw(row){
+      return safe(getValueByAliases(row,["Movement","Status Movement","Status"]));
+    }
+
+    function getEffectiveMovement(row){
+      const movement = getMovementRaw(row);
+      const eventDate = safe(getValueByAliases(row,["Event_Date","Event Date","Date"]));
+
+      if(eventDate === baselineEvent) return "Baseline";
+      if(["New Joiner","New Member"].includes(movement)) return "New Member";
+      if(movement === "Returned") return "Returning Member";
+      if(["Existing","Active","Existing Member","Active Member"].includes(movement)) return "Active Member";
+      return movement || "Active Member";
+    }
+
+    function getMovementClass(movement){
+      if(movement === "New Member") return "status-new";
+      if(movement === "Returning Member") return "status-returned";
+      if(movement === "Baseline") return "status-baseline";
+      return "status-active";
+    }
+
+    function getTierClass(tier){
+      const t = safe(tier).toLowerCase();
+      if(t.includes("top")) return "tier-top";
+      if(t.includes("consistent")) return "tier-consistent";
+      if(t.includes("attention")) return "tier-attention";
+      if(t.includes("risk") || t.includes("non")) return "tier-risk";
+      return "tier-consistent";
+    }
+
+    function getStatus(points){
+      return points < 60000 ? "Below Target" : "On Track";
+    }
+
+    function getAction(streak){
+      const n = num(streak);
+      if(n >= 2) return "Action Required";
+      if(n === 1) return "Monitor";
+      return "No Action";
+    }
+
+    function getActionClass(action){
+      if(action === "Action Required") return "action-required";
+      if(action === "Monitor") return "action-monitor";
+      return "action-none";
+    }
+
+    function getStreakLabel(streak){
+      const n = num(streak);
+      if(n <= 0) return "—";
+      return `${n} Event${n > 1 ? "s" : ""}`;
+    }
+
     function populateEvents(){
       const eventSelect = document.getElementById("eventSelect");
 
@@ -1086,6 +1378,8 @@
           .map(r => getValueByAliases(r,["Event_Date","Event Date","Date"]))
           .filter(Boolean)
       )].sort((a,b)=>new Date(a)-new Date(b));
+
+      baselineEvent = orderedEvents[0] || null;
 
       eventSelect.innerHTML = orderedEvents
         .map(d => `<option value="${d}">${d}</option>`)
@@ -1285,6 +1579,153 @@
       `).join("");
     }
 
+    function getPlayerHistory(playerName){
+      const target = safe(playerName).toLowerCase();
+
+      return analysisRows
+        .filter(r => safe(getValueByAliases(r,["Player","Name","Player Name"])).toLowerCase() === target)
+        .sort((a,b) => new Date(getValueByAliases(a,["Event_Date","Event Date","Date"])) - new Date(getValueByAliases(b,["Event_Date","Event Date","Date"])))
+        .map(row => {
+          const eventDate = safe(getValueByAliases(row,["Event_Date","Event Date","Date"]));
+          const points = num(getValueByAliases(row,["Points","Points_Accumulated","Score"]));
+          const prev = num(getValueByAliases(row,["Prev_Points","Prev Points","Previous Points"]));
+          const hasPrevious = prev > 0;
+          const change = hasPrevious ? points - prev : 0;
+          const pct = hasPrevious ? (((points - prev) / prev) * 100) : null;
+          const status = getStatus(points);
+          const streak = num(getValueByAliases(row,["Below_Streak","Below Streak","Streak"]));
+          const action = getAction(streak);
+          const tier = safe(getValueByAliases(row,["Tier","Category"])) || "Consistent";
+
+          const sameEventRows = analysisRows
+            .filter(r => safe(getValueByAliases(r,["Event_Date","Event Date","Date"])) === eventDate)
+            .sort((a,b) => num(getValueByAliases(b,["Points","Points_Accumulated","Score"])) - num(getValueByAliases(a,["Points","Points_Accumulated","Score"])));
+
+          const position = sameEventRows.findIndex(r =>
+            safe(getValueByAliases(r,["Player","Name","Player Name"])).toLowerCase() === target
+          ) + 1;
+
+          return {
+            eventDate,
+            points,
+            prev,
+            hasPrevious,
+            change,
+            pct,
+            status,
+            action,
+            tier,
+            position: position > 0 ? position : null
+          };
+        });
+    }
+
+    function renderPlayerHistoryChart(history){
+      const ctx = document.getElementById("playerHistoryChart").getContext("2d");
+      if(playerHistoryChart) playerHistoryChart.destroy();
+
+      const gradient = ctx.createLinearGradient(0,0,0,260);
+      gradient.addColorStop(0,"rgba(192,132,252,.40)");
+      gradient.addColorStop(1,"rgba(192,132,252,.04)");
+
+      playerHistoryChart = new Chart(ctx,{
+        type:"line",
+        data:{
+          labels:history.map(h => h.eventDate),
+          datasets:[{
+            label:"Points",
+            data:history.map(h => h.points),
+            borderColor:"#e9d5ff",
+            backgroundColor:gradient,
+            fill:true,
+            tension:.35,
+            pointRadius:3,
+            pointHoverRadius:5,
+            pointBackgroundColor:"#f5e9ff",
+            pointBorderWidth:0
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{legend:{display:false}},
+          scales:{
+            x:{ticks:{color:"#e9d5ff"}},
+            y:{
+              ticks:{color:"#e9d5ff", callback:v => format(v)},
+              grid:{color:"rgba(255,255,255,.08)"}
+            }
+          }
+        }
+      });
+    }
+
+    function openPlayerHistory(playerName){
+      const history = getPlayerHistory(playerName);
+      const modal = document.getElementById("playerHistoryModal");
+      const table = document.getElementById("playerHistoryTable");
+      const empty = document.getElementById("playerHistoryEmpty");
+
+      document.getElementById("historyPlayerName").textContent = playerName;
+
+      if(!history.length){
+        document.getElementById("historyEventCount").textContent = "0";
+        document.getElementById("historyCumulativePoints").textContent = "0";
+        document.getElementById("historyBestPosition").textContent = "—";
+        document.getElementById("historyLatestPoints").textContent = "0";
+        table.innerHTML = "";
+        empty.style.display = "block";
+        if(playerHistoryChart){ playerHistoryChart.destroy(); playerHistoryChart = null; }
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden","false");
+        return;
+      }
+
+      empty.style.display = "none";
+
+      const bestPosition = Math.min(...history.map(h => h.position || 999999));
+      const latestPoints = history[history.length - 1].points;
+      const cumulativeTotal = history.reduce((s,h) => s + h.points, 0);
+
+      document.getElementById("historyEventCount").textContent = history.length.toLocaleString();
+      document.getElementById("historyCumulativePoints").textContent = format(cumulativeTotal);
+      document.getElementById("historyBestPosition").textContent = bestPosition === 999999 ? "—" : `#${bestPosition}`;
+      document.getElementById("historyLatestPoints").textContent = format(latestPoints);
+
+      const historyNewestFirst = history.slice().reverse();
+
+      table.innerHTML = historyNewestFirst.map(h => {
+        const cumulativeToEvent = history
+          .filter(x => new Date(x.eventDate) <= new Date(h.eventDate))
+          .reduce((s,x) => s + x.points, 0);
+
+        return `
+          <tr>
+            <td>${h.eventDate}</td>
+            <td>${h.position ? "#" + h.position : "—"}</td>
+            <td>${format(h.points)}</td>
+            <td>${h.hasPrevious ? format(h.prev) : "—"}</td>
+            <td class="${metricClass(h.change, h.hasPrevious)}">${h.hasPrevious ? formatSigned(h.change) : "—"}</td>
+            <td class="${h.pct === null ? "metric-none" : metricClass(h.pct, true)}">${h.pct === null ? "—" : formatPct(h.pct)}</td>
+            <td>${format(cumulativeToEvent)}</td>
+            <td><span class="perf-badge ${h.status === "Below Target" ? "perf-below" : "perf-ontarget"}">${h.status}</span></td>
+            <td><span class="tier-badge ${getTierClass(h.tier)}">${h.tier}</span></td>
+            <td><span class="action-badge ${getActionClass(h.action)}">${h.action}</span></td>
+          </tr>
+        `;
+      }).join("");
+
+      renderPlayerHistoryChart(history);
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden","false");
+    }
+
+    function closePlayerHistory(){
+      const modal = document.getElementById("playerHistoryModal");
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden","true");
+    }
+
     function renderEvent(){
       const eventRows = analysisRows.filter(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === selectedEvent);
       const searchTerm = String(document.getElementById("playerSearch").value || "").toLowerCase();
@@ -1296,8 +1737,8 @@
       const above = eventRows.filter(r => num(getValueByAliases(r,["Points","Points_Accumulated","Score"])) >= 60000).length;
       const below = eventRows.filter(r => num(getValueByAliases(r,["Points","Points_Accumulated","Score"])) < 60000).length;
       const repeat = eventRows.filter(r => num(getValueByAliases(r,["Below_Streak","Below Streak","Streak"])) >= 2).length;
-      const newMembers = eventRows.filter(r => getValueByAliases(r,["Movement","Status"]) === "New Member").length;
-      const returnedMembers = eventRows.filter(r => getValueByAliases(r,["Movement","Status"]) === "Returning Member").length;
+      const newMembers = eventRows.filter(r => getEffectiveMovement(r) === "New Member").length;
+      const returnedMembers = eventRows.filter(r => getEffectiveMovement(r) === "Returning Member").length;
 
       set("latestEvent", selectedEvent || "No data");
       set("kpiPlayers", totalPlayers.toLocaleString());
@@ -1349,24 +1790,29 @@
           const hasPrevious = prev > 0;
           const change = hasPrevious ? points - prev : 0;
           const pct = hasPrevious ? ((points - prev) / prev) * 100 : null;
-          const status = points < 60000 ? "Below Target" : "On Track";
+          const status = getStatus(points);
           const streak = num(getValueByAliases(r,["Below_Streak","Below Streak","Streak"]));
-          const action = streak >= 2 ? "Action Required" : (streak === 1 ? "Monitor" : "No Action");
-          const movement = getValueByAliases(r,["Movement","Status"]) || "Active Member";
+          const action = getAction(streak);
+          const movement = getEffectiveMovement(r);
           const tier = getValueByAliases(r,["Tier","Category"]) || "Consistent";
 
           return `
             <tr class="${tier === "Top Performer" ? "highlight-top" : ""}">
-              <td>${createNameCell(player)}</td>
+              <td>
+                <div class="name-wrap">
+                  <div class="avatar">${initials(player)}</div>
+                  <div class="player-link" onclick="openPlayerHistory('${escapeJsString(player)}')">${player}</div>
+                </div>
+              </td>
               <td>${format(points)}</td>
               <td>${hasPrevious ? format(prev) : "—"}</td>
-              <td class="${metricClass(change, hasPrevious)}">${hasPrevious ? ((change > 0 ? "+" : "") + format(change)) : "—"}</td>
-              <td class="${pct === null ? "metric-none" : metricClass(pct, true)}">${pct === null ? "—" : `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%`}</td>
+              <td class="${metricClass(change, hasPrevious)}">${hasPrevious ? formatSigned(change) : "—"}</td>
+              <td class="${pct === null ? "metric-none" : metricClass(pct, true)}">${pct === null ? "—" : formatPct(pct)}</td>
               <td><span class="perf-badge ${status === "Below Target" ? "perf-below" : "perf-ontarget"}">${status}</span></td>
-              <td>${streak > 0 ? `${streak} Event${streak > 1 ? "s" : ""}` : "—"}</td>
-              <td><span class="action-badge ${action === "Action Required" ? "action-required" : action === "Monitor" ? "action-monitor" : "action-none"}">${action}</span></td>
-              <td><span class="status-badge ${movement === "New Member" ? "status-new" : movement === "Returning Member" ? "status-returned" : movement === "Baseline" ? "status-baseline" : "status-active"}">${movement}</span></td>
-              <td><span class="tier-badge ${tier === "Top Performer" ? "tier-top" : tier === "Needs Attention" ? "tier-attention" : tier === "Risk" ? "tier-risk" : "tier-consistent"}">${tier}</span></td>
+              <td>${getStreakLabel(streak)}</td>
+              <td><span class="action-badge ${getActionClass(action)}">${action}</span></td>
+              <td><span class="status-badge ${getMovementClass(movement)}">${movement}</span></td>
+              <td><span class="tier-badge ${getTierClass(tier)}">${tier}</span></td>
             </tr>
           `;
         }).join("");
@@ -1414,6 +1860,8 @@
         console.error(error);
         set("latestEvent","Load failed");
         document.getElementById("analysisTable").innerHTML = `<tr><td colspan="10">${error.message}</td></tr>`;
+        renderList("flaggedList", []);
+        renderList("summonList", []);
       }
     }
 
@@ -1426,6 +1874,16 @@
     document.getElementById("playerSearch").addEventListener("input", renderEvent);
     document.getElementById("prevEventBtn").addEventListener("click", goToPreviousEvent);
     document.getElementById("nextEventBtn").addEventListener("click", goToNextEvent);
+
+    document.getElementById("closePlayerHistoryModal").addEventListener("click", closePlayerHistory);
+
+    document.getElementById("playerHistoryModal").addEventListener("click", e => {
+      if(e.target.id === "playerHistoryModal") closePlayerHistory();
+    });
+
+    document.addEventListener("keydown", e => {
+      if(e.key === "Escape") closePlayerHistory();
+    });
 
     const btn = document.getElementById("backToTopBtn");
     window.addEventListener("scroll", () => {

@@ -224,9 +224,15 @@
 
     .event-nav-grid{
       display:grid;
-      grid-template-columns:174px 274px minmax(360px,1fr) 174px;
-      gap:12px;
+      grid-template-columns:180px 280px minmax(420px,1fr) 180px;
+      gap:16px;
       align-items:end;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
     }
 
     .field label{
@@ -241,7 +247,8 @@
 
     .input,.select,.button{
       width:100%;
-      min-height:46px;
+      height:56px;
+      min-height:56px;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.05);
@@ -781,19 +788,17 @@
 
     .search-combo{
       display:grid;
-      grid-template-columns:minmax(0,1fr) 160px;
-      gap:12px;
-      align-items:end;
+      grid-template-columns:minmax(0,1fr) 180px;
+      gap:16px;
+      align-items:stretch;
     }
 
     .search-combo .input{
-      flex:1;
       min-width:0;
     }
 
     .search-combo .button{
       width:100%;
-      min-height:46px;
     }
 
     .searched-row{
@@ -803,11 +808,12 @@
     }
 
     .search-message{
-      margin-top:8px;
+      margin-top:12px;
       color:#ffe68a;
       font-size:12px;
       font-weight:700;
       min-height:16px;
+      text-align:center;
     }
 
     @media(max-width:1400px){
@@ -848,8 +854,8 @@
 
     @media(max-width:640px){
       .event-nav-grid{grid-template-columns:1fr}
-      .search-combo{flex-direction:column;align-items:stretch}
-      .search-combo .button{width:100%;flex:auto}
+      .search-combo{grid-template-columns:1fr}
+      .search-combo .button{width:100%}
     }
 
     @media(max-width:560px){
@@ -946,7 +952,6 @@
             <button id="playerSearchBtn" class="button" type="button">Search</button>
           </div>
           <datalist id="playerSuggestions"></datalist>
-          <div id="searchMessage" class="search-message"></div>
         </div>
 
         <div class="field nav-btn-field">
@@ -954,6 +959,7 @@
           <button id="nextEventBtn" class="button nav-button">Next →</button>
         </div>
       </div>
+      <div id="searchMessage" class="search-message"></div>
     </section>
 
     <section class="clan-grid">

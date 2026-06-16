@@ -489,34 +489,6 @@
       color:#e9d5ff;
     }
 
-    .search-box{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-
-    .search-box .input{
-      flex:1 1 auto;
-      min-width:0;
-    }
-
-    .search-button{
-      flex:0 0 118px;
-      white-space:nowrap;
-    }
-
-    .search-focus{
-      outline:2px solid rgba(250,204,21,.92);
-      outline-offset:-2px;
-      background:linear-gradient(90deg,rgba(250,204,21,.18),rgba(250,204,21,.04))!important;
-      animation:searchPulse 1.2s ease-in-out 2;
-    }
-
-    @keyframes searchPulse{
-      0%,100%{box-shadow:none}
-      50%{box-shadow:0 0 24px rgba(250,204,21,.26)}
-    }
-
     .metric-pos{color:#61e29d;font-weight:800}
     .metric-neg{color:#ff7f8f;font-weight:800}
     .metric-flat{color:#c6d3ea;font-weight:800}
@@ -806,6 +778,37 @@
       font-size:14px;
     }
 
+
+    .search-combo{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .search-combo .input{
+      flex:1;
+      min-width:0;
+    }
+
+    .search-combo .button{
+      width:130px;
+      flex:0 0 130px;
+    }
+
+    .searched-row{
+      background:linear-gradient(90deg,rgba(250,204,21,.22),rgba(192,132,252,.10)) !important;
+      outline:2px solid rgba(250,204,21,.75);
+      outline-offset:-2px;
+    }
+
+    .search-message{
+      margin-top:8px;
+      color:#ffe68a;
+      font-size:12px;
+      font-weight:700;
+      min-height:16px;
+    }
+
     @media(max-width:1400px){
       .status-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
       .clan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -844,11 +847,11 @@
 
     @media(max-width:640px){
       .event-nav-grid{grid-template-columns:1fr}
+      .search-combo{flex-direction:column;align-items:stretch}
+      .search-combo .button{width:100%;flex:auto}
     }
 
     @media(max-width:560px){
-      .search-box{flex-direction:column;align-items:stretch}
-      .search-button{flex:1 1 auto;width:100%}
       .hero-side,.kpi-grid,.status-strip,.clan-grid,.history-kpis{grid-template-columns:1fr}
       .hero h1{font-size:28px}
       .back-to-top{
@@ -937,11 +940,12 @@
 
         <div class="field search-field">
           <label for="playerSearch">Search Player</label>
-          <div class="search-box">
+          <div class="search-combo">
             <input id="playerSearch" class="input" type="text" list="playerSuggestions" placeholder="Type player name" autocomplete="off" />
-            <button id="playerSearchBtn" class="button search-button" type="button">Search</button>
+            <button id="playerSearchBtn" class="button" type="button">Search</button>
           </div>
           <datalist id="playerSuggestions"></datalist>
+          <div id="searchMessage" class="search-message"></div>
         </div>
 
         <div class="field nav-btn-field">
@@ -1210,7 +1214,6 @@
     let trendChart = null;
     let topChart = null;
     let playerHistoryChart = null;
-    let highlightedPlayerKey = null;
 
     function parseCSVLine(line){
       const result = [];
@@ -1326,122 +1329,143 @@
       return String(v || "").trim();
     }
 
-    function normalizeSearchText(value){
-      return safe(value)
-        .toLowerCase()
-        .normalize("NFKD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
+    function escapeAttr(str){
+      return String(str || "")
+        .replace(/&/g,"&amp;")
+        .replace(/"/g,"&quot;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
     }
 
-    function getPlayerName(row){
-      return safe(getValueByAliases(row,["Player","Name","Player Name"]));
+    function normalizePlayerName(name){
+      return safe(name).toLowerCase();
     }
 
-    function getEventDate(row){
+    function getPlayerNameFromRow(row){
+      return getValueByAliases(row,["Player","Name","Player Name"]);
+    }
+
+    function getRowEventDate(row){
       return safe(getValueByAliases(row,["Event_Date","Event Date","Date"]));
     }
 
-    function getSelectedEventPlayers(){
-      return [...new Set(
-        analysisRows
-          .filter(r => getEventDate(r) === selectedEvent)
-          .map(getPlayerName)
-          .filter(Boolean)
-      )].sort((a,b)=>a.localeCompare(b));
+    function getRowPoints(row){
+      return num(getValueByAliases(row,["Points","Points_Accumulated","Score"]));
     }
 
-    function getAllPlayerNames(){
-      return [...new Set(
-        analysisRows
-          .map(getPlayerName)
-          .filter(Boolean)
-      )].sort((a,b)=>a.localeCompare(b));
+    function getPlayerRows(playerName){
+      const target = normalizePlayerName(playerName);
+      return analysisRows
+        .filter(r => normalizePlayerName(getPlayerNameFromRow(r)) === target)
+        .sort((a,b) => new Date(getRowEventDate(a)) - new Date(getRowEventDate(b)));
+    }
+
+    function getActualPreviousPoints(playerName,eventDate){
+      const rows = getPlayerRows(playerName).filter(r => new Date(getRowEventDate(r)) < new Date(eventDate));
+      if(!rows.length) return 0;
+      return getRowPoints(rows[rows.length - 1]);
+    }
+
+    function getPlayerNames(){
+      const seen = new Set();
+      return analysisRows
+        .map(r => getPlayerNameFromRow(r))
+        .filter(Boolean)
+        .filter(name => {
+          const key = normalizePlayerName(name);
+          if(seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .sort((a,b)=>a.localeCompare(b));
     }
 
     function updatePlayerSuggestions(){
       const list = document.getElementById("playerSuggestions");
-      const input = document.getElementById("playerSearch");
-      if(!list || !input) return;
-
-      const q = normalizeSearchText(input.value);
-      const names = getSelectedEventPlayers().length ? getSelectedEventPlayers() : getAllPlayerNames();
-      const starts = names.filter(n => normalizeSearchText(n).startsWith(q));
-      const contains = names.filter(n => !normalizeSearchText(n).startsWith(q) && normalizeSearchText(n).includes(q));
-      const suggestions = (q ? [...starts, ...contains] : names).slice(0, 35);
-
-      list.innerHTML = suggestions
-        .map(name => `<option value="${String(name).replace(/"/g,'&quot;')}"></option>`)
+      if(!list) return;
+      list.innerHTML = getPlayerNames()
+        .map(name => `<option value="${escapeAttr(name)}"></option>`)
         .join("");
     }
 
     function findBestPlayerMatch(query){
-      const q = normalizeSearchText(query);
+      const q = normalizePlayerName(query);
       if(!q) return null;
 
-      const selectedNames = getSelectedEventPlayers();
-      const allNames = getAllPlayerNames();
-      const pools = [selectedNames, allNames];
+      const names = getPlayerNames();
+      return names.find(n => normalizePlayerName(n) === q)
+        || names.find(n => normalizePlayerName(n).startsWith(q))
+        || names.find(n => normalizePlayerName(n).includes(q))
+        || null;
+    }
 
-      for(const names of pools){
-        let hit = names.find(n => normalizeSearchText(n) === q);
-        if(hit) return hit;
-        hit = names.find(n => normalizeSearchText(n).startsWith(q));
-        if(hit) return hit;
-        hit = names.find(n => normalizeSearchText(n).includes(q));
-        if(hit) return hit;
+    function latestEventForPlayer(playerName){
+      const rows = getPlayerRows(playerName);
+      if(!rows.length) return null;
+      return getRowEventDate(rows[rows.length - 1]);
+    }
+
+    function setSearchMessage(message){
+      const el = document.getElementById("searchMessage");
+      if(el) el.textContent = message || "";
+    }
+
+    function scrollToPlayerRow(playerName){
+      const target = normalizePlayerName(playerName);
+      const rows = document.querySelectorAll("#analysisTable tr[data-player-name]");
+      let found = null;
+
+      rows.forEach(row => {
+        row.classList.remove("searched-row");
+        if(row.getAttribute("data-player-name") === target) found = row;
+      });
+
+      if(found){
+        found.classList.add("searched-row");
+        found.scrollIntoView({behavior:"smooth", block:"center"});
+        setTimeout(() => found.classList.remove("searched-row"), 6000);
+        return true;
       }
 
-      return null;
-    }
-
-    function latestEventForPlayer(player){
-      const key = normalizeSearchText(player);
-      const dates = analysisRows
-        .filter(r => normalizeSearchText(getPlayerName(r)) === key)
-        .map(getEventDate)
-        .filter(Boolean)
-        .sort((a,b)=>new Date(a)-new Date(b));
-      return dates[dates.length - 1] || null;
-    }
-
-    function scrollToPlayerRow(player){
-      highlightedPlayerKey = normalizeSearchText(player);
-      renderEvent();
-      setTimeout(() => {
-        const row = document.querySelector(`#analysisTable tr[data-player-key="${CSS.escape(highlightedPlayerKey)}"]`);
-        if(row){
-          row.scrollIntoView({behavior:"smooth", block:"center"});
-          row.classList.add("search-focus");
-        }
-      }, 80);
+      return false;
     }
 
     function runPlayerSearch(){
       const input = document.getElementById("playerSearch");
-      const found = findBestPlayerMatch(input ? input.value : "");
+      const query = input ? input.value : "";
+      const found = findBestPlayerMatch(query);
 
       if(!found){
-        alert("No player found. Try fewer letters or check the spelling.");
+        setSearchMessage("No player found. Try fewer letters or check spelling.");
         return;
       }
 
-      if(input) input.value = found;
+      input.value = found;
 
-      const currentEventHasPlayer = analysisRows.some(r => getEventDate(r) === selectedEvent && normalizeSearchText(getPlayerName(r)) === normalizeSearchText(found));
-      if(!currentEventHasPlayer){
+      const existsInSelected = analysisRows.some(r =>
+        getRowEventDate(r) === selectedEvent &&
+        normalizePlayerName(getPlayerNameFromRow(r)) === normalizePlayerName(found)
+      );
+
+      if(!existsInSelected){
         const latest = latestEventForPlayer(found);
-        if(latest){
+        if(latest && latest !== selectedEvent){
           selectedEvent = latest;
-          const eventSelect = document.getElementById("eventSelect");
-          if(eventSelect) eventSelect.value = selectedEvent;
+          document.getElementById("eventSelect").value = selectedEvent;
           updateEventNavButtons();
+          setSearchMessage(`${found} was not in the selected event. Moved to ${latest}.`);
         }
+      } else {
+        setSearchMessage(`Showing ${found}.`);
       }
 
-      scrollToPlayerRow(found);
+      renderEvent();
+      setTimeout(() => {
+        const ok = scrollToPlayerRow(found);
+        if(!ok) setSearchMessage(`${found} exists, but is not visible in the current filtered table.`);
+      }, 80);
     }
+
 
     function fetchCsv(url){
       const sep = url.includes("?") ? "&" : "?";
@@ -1541,7 +1565,6 @@
       if(selectedEvent) eventSelect.value = selectedEvent;
 
       updateEventNavButtons();
-      updatePlayerSuggestions();
     }
 
     function updateEventNavButtons(){
@@ -1556,8 +1579,6 @@
         selectedEvent = orderedEvents[idx - 1];
         document.getElementById("eventSelect").value = selectedEvent;
         updateEventNavButtons();
-        highlightedPlayerKey = null;
-        updatePlayerSuggestions();
         renderEvent();
       }
     }
@@ -1568,8 +1589,6 @@
         selectedEvent = orderedEvents[idx + 1];
         document.getElementById("eventSelect").value = selectedEvent;
         updateEventNavButtons();
-        highlightedPlayerKey = null;
-        updatePlayerSuggestions();
         renderEvent();
       }
     }
@@ -1737,16 +1756,13 @@
     }
 
     function getPlayerHistory(playerName){
-      const target = safe(playerName).toLowerCase();
+      const rows = getPlayerRows(playerName);
 
-      return analysisRows
-        .filter(r => safe(getValueByAliases(r,["Player","Name","Player Name"])).toLowerCase() === target)
-        .sort((a,b) => new Date(getValueByAliases(a,["Event_Date","Event Date","Date"])) - new Date(getValueByAliases(b,["Event_Date","Event Date","Date"])))
-        .map(row => {
-          const eventDate = safe(getValueByAliases(row,["Event_Date","Event Date","Date"]));
-          const points = num(getValueByAliases(row,["Points","Points_Accumulated","Score"]));
-          const prev = num(getValueByAliases(row,["Prev_Points","Prev Points","Previous Points"]));
-          const hasPrevious = prev > 0;
+      return rows.map((row, idx) => {
+          const eventDate = getRowEventDate(row);
+          const points = getRowPoints(row);
+          const prev = idx > 0 ? getRowPoints(rows[idx - 1]) : 0;
+          const hasPrevious = idx > 0 && prev > 0;
           const change = hasPrevious ? points - prev : 0;
           const pct = hasPrevious ? (((points - prev) / prev) * 100) : null;
           const status = getStatus(points);
@@ -1755,11 +1771,12 @@
           const tier = safe(getValueByAliases(row,["Tier","Category"])) || "Consistent";
 
           const sameEventRows = analysisRows
-            .filter(r => safe(getValueByAliases(r,["Event_Date","Event Date","Date"])) === eventDate)
-            .sort((a,b) => num(getValueByAliases(b,["Points","Points_Accumulated","Score"])) - num(getValueByAliases(a,["Points","Points_Accumulated","Score"])));
+            .filter(r => getRowEventDate(r) === eventDate)
+            .sort((a,b) => getRowPoints(b) - getRowPoints(a));
 
+          const target = normalizePlayerName(playerName);
           const position = sameEventRows.findIndex(r =>
-            safe(getValueByAliases(r,["Player","Name","Player Name"])).toLowerCase() === target
+            normalizePlayerName(getPlayerNameFromRow(r)) === target
           ) + 1;
 
           return {
@@ -1884,7 +1901,6 @@
     }
 
     function renderEvent(){
-      updatePlayerSuggestions();
       const eventRows = analysisRows.filter(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === selectedEvent);
       const searchTerm = String(document.getElementById("playerSearch").value || "").toLowerCase();
       const filtered = eventRows.filter(r => !searchTerm || String(getValueByAliases(r,["Player","Name","Player Name"])).toLowerCase().includes(searchTerm));
@@ -1942,9 +1958,10 @@
       document.getElementById("analysisTable").innerHTML = filtered
         .sort((a,b)=>num(getValueByAliases(b,["Points","Points_Accumulated","Score"])) - num(getValueByAliases(a,["Points","Points_Accumulated","Score"])))
         .map(r => {
-          const player = getValueByAliases(r,["Player","Name","Player Name"]);
-          const points = num(getValueByAliases(r,["Points","Points_Accumulated","Score"]));
-          const prev = num(getValueByAliases(r,["Prev_Points","Prev Points","Previous Points"]));
+          const player = getPlayerNameFromRow(r);
+          const points = getRowPoints(r);
+          const eventDate = getRowEventDate(r);
+          const prev = getActualPreviousPoints(player,eventDate);
           const hasPrevious = prev > 0;
           const change = hasPrevious ? points - prev : 0;
           const pct = hasPrevious ? ((points - prev) / prev) * 100 : null;
@@ -1954,11 +1971,8 @@
           const movement = getEffectiveMovement(r);
           const tier = getValueByAliases(r,["Tier","Category"]) || "Consistent";
 
-          const playerKey = normalizeSearchText(player);
-          const rowClass = `${tier === "Top Performer" ? "highlight-top" : ""} ${highlightedPlayerKey === playerKey ? "search-focus" : ""}`.trim();
-
           return `
-            <tr data-player-key="${playerKey}" class="${rowClass}">
+            <tr class="${tier === "Top Performer" ? "highlight-top" : ""}" data-player-name="${escapeAttr(normalizePlayerName(player))}">
               <td>
                 <div class="name-wrap">
                   <div class="avatar">${initials(player)}</div>
@@ -2015,6 +2029,7 @@
         ]);
 
         populateEvents();
+        updatePlayerSuggestions();
         renderTrend();
         renderEvent();
       } catch(error){
@@ -2029,14 +2044,11 @@
     document.getElementById("eventSelect").addEventListener("change", e => {
       selectedEvent = e.target.value;
       updateEventNavButtons();
-      highlightedPlayerKey = null;
-      updatePlayerSuggestions();
       renderEvent();
     });
 
     document.getElementById("playerSearch").addEventListener("input", () => {
-      highlightedPlayerKey = null;
-      updatePlayerSuggestions();
+      setSearchMessage("");
       renderEvent();
     });
     document.getElementById("playerSearch").addEventListener("keydown", e => {

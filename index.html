@@ -489,6 +489,34 @@
       color:#e9d5ff;
     }
 
+    .search-box{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .search-box .input{
+      flex:1 1 auto;
+      min-width:0;
+    }
+
+    .search-button{
+      flex:0 0 118px;
+      white-space:nowrap;
+    }
+
+    .search-focus{
+      outline:2px solid rgba(250,204,21,.92);
+      outline-offset:-2px;
+      background:linear-gradient(90deg,rgba(250,204,21,.18),rgba(250,204,21,.04))!important;
+      animation:searchPulse 1.2s ease-in-out 2;
+    }
+
+    @keyframes searchPulse{
+      0%,100%{box-shadow:none}
+      50%{box-shadow:0 0 24px rgba(250,204,21,.26)}
+    }
+
     .metric-pos{color:#61e29d;font-weight:800}
     .metric-neg{color:#ff7f8f;font-weight:800}
     .metric-flat{color:#c6d3ea;font-weight:800}
@@ -819,6 +847,8 @@
     }
 
     @media(max-width:560px){
+      .search-box{flex-direction:column;align-items:stretch}
+      .search-button{flex:1 1 auto;width:100%}
       .hero-side,.kpi-grid,.status-strip,.clan-grid,.history-kpis{grid-template-columns:1fr}
       .hero h1{font-size:28px}
       .back-to-top{
@@ -907,7 +937,11 @@
 
         <div class="field search-field">
           <label for="playerSearch">Search Player</label>
-          <input id="playerSearch" class="input" type="text" placeholder="Type player name" />
+          <div class="search-box">
+            <input id="playerSearch" class="input" type="text" list="playerSuggestions" placeholder="Type player name" autocomplete="off" />
+            <button id="playerSearchBtn" class="button search-button" type="button">Search</button>
+          </div>
+          <datalist id="playerSuggestions"></datalist>
         </div>
 
         <div class="field nav-btn-field">
@@ -1176,6 +1210,7 @@
     let trendChart = null;
     let topChart = null;
     let playerHistoryChart = null;
+    let highlightedPlayerKey = null;
 
     function parseCSVLine(line){
       const result = [];
@@ -1291,6 +1326,123 @@
       return String(v || "").trim();
     }
 
+    function normalizeSearchText(value){
+      return safe(value)
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function getPlayerName(row){
+      return safe(getValueByAliases(row,["Player","Name","Player Name"]));
+    }
+
+    function getEventDate(row){
+      return safe(getValueByAliases(row,["Event_Date","Event Date","Date"]));
+    }
+
+    function getSelectedEventPlayers(){
+      return [...new Set(
+        analysisRows
+          .filter(r => getEventDate(r) === selectedEvent)
+          .map(getPlayerName)
+          .filter(Boolean)
+      )].sort((a,b)=>a.localeCompare(b));
+    }
+
+    function getAllPlayerNames(){
+      return [...new Set(
+        analysisRows
+          .map(getPlayerName)
+          .filter(Boolean)
+      )].sort((a,b)=>a.localeCompare(b));
+    }
+
+    function updatePlayerSuggestions(){
+      const list = document.getElementById("playerSuggestions");
+      const input = document.getElementById("playerSearch");
+      if(!list || !input) return;
+
+      const q = normalizeSearchText(input.value);
+      const names = getSelectedEventPlayers().length ? getSelectedEventPlayers() : getAllPlayerNames();
+      const starts = names.filter(n => normalizeSearchText(n).startsWith(q));
+      const contains = names.filter(n => !normalizeSearchText(n).startsWith(q) && normalizeSearchText(n).includes(q));
+      const suggestions = (q ? [...starts, ...contains] : names).slice(0, 35);
+
+      list.innerHTML = suggestions
+        .map(name => `<option value="${String(name).replace(/"/g,'&quot;')}"></option>`)
+        .join("");
+    }
+
+    function findBestPlayerMatch(query){
+      const q = normalizeSearchText(query);
+      if(!q) return null;
+
+      const selectedNames = getSelectedEventPlayers();
+      const allNames = getAllPlayerNames();
+      const pools = [selectedNames, allNames];
+
+      for(const names of pools){
+        let hit = names.find(n => normalizeSearchText(n) === q);
+        if(hit) return hit;
+        hit = names.find(n => normalizeSearchText(n).startsWith(q));
+        if(hit) return hit;
+        hit = names.find(n => normalizeSearchText(n).includes(q));
+        if(hit) return hit;
+      }
+
+      return null;
+    }
+
+    function latestEventForPlayer(player){
+      const key = normalizeSearchText(player);
+      const dates = analysisRows
+        .filter(r => normalizeSearchText(getPlayerName(r)) === key)
+        .map(getEventDate)
+        .filter(Boolean)
+        .sort((a,b)=>new Date(a)-new Date(b));
+      return dates[dates.length - 1] || null;
+    }
+
+    function scrollToPlayerRow(player){
+      highlightedPlayerKey = normalizeSearchText(player);
+      renderEvent();
+      setTimeout(() => {
+        const row = document.querySelector(`#analysisTable tr[data-player-key="${CSS.escape(highlightedPlayerKey)}"]`);
+        if(row){
+          row.scrollIntoView({behavior:"smooth", block:"center"});
+          row.classList.add("search-focus");
+        }
+      }, 80);
+    }
+
+    function runPlayerSearch(){
+      const input = document.getElementById("playerSearch");
+      const found = findBestPlayerMatch(input ? input.value : "");
+
+      if(!found){
+        alert("No player found. Try fewer letters or check the spelling.");
+        return;
+      }
+
+      if(input) input.value = found;
+
+      const currentEventHasPlayer = analysisRows.some(r => getEventDate(r) === selectedEvent && normalizeSearchText(getPlayerName(r)) === normalizeSearchText(found));
+      if(!currentEventHasPlayer){
+        const latest = latestEventForPlayer(found);
+        if(latest){
+          selectedEvent = latest;
+          const eventSelect = document.getElementById("eventSelect");
+          if(eventSelect) eventSelect.value = selectedEvent;
+          updateEventNavButtons();
+        }
+      }
+
+      scrollToPlayerRow(found);
+    }
+
     function fetchCsv(url){
       const sep = url.includes("?") ? "&" : "?";
       return fetch(url + sep + "_ts=" + Date.now())
@@ -1389,6 +1541,7 @@
       if(selectedEvent) eventSelect.value = selectedEvent;
 
       updateEventNavButtons();
+      updatePlayerSuggestions();
     }
 
     function updateEventNavButtons(){
@@ -1403,6 +1556,8 @@
         selectedEvent = orderedEvents[idx - 1];
         document.getElementById("eventSelect").value = selectedEvent;
         updateEventNavButtons();
+        highlightedPlayerKey = null;
+        updatePlayerSuggestions();
         renderEvent();
       }
     }
@@ -1413,6 +1568,8 @@
         selectedEvent = orderedEvents[idx + 1];
         document.getElementById("eventSelect").value = selectedEvent;
         updateEventNavButtons();
+        highlightedPlayerKey = null;
+        updatePlayerSuggestions();
         renderEvent();
       }
     }
@@ -1727,6 +1884,7 @@
     }
 
     function renderEvent(){
+      updatePlayerSuggestions();
       const eventRows = analysisRows.filter(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === selectedEvent);
       const searchTerm = String(document.getElementById("playerSearch").value || "").toLowerCase();
       const filtered = eventRows.filter(r => !searchTerm || String(getValueByAliases(r,["Player","Name","Player Name"])).toLowerCase().includes(searchTerm));
@@ -1796,8 +1954,11 @@
           const movement = getEffectiveMovement(r);
           const tier = getValueByAliases(r,["Tier","Category"]) || "Consistent";
 
+          const playerKey = normalizeSearchText(player);
+          const rowClass = `${tier === "Top Performer" ? "highlight-top" : ""} ${highlightedPlayerKey === playerKey ? "search-focus" : ""}`.trim();
+
           return `
-            <tr class="${tier === "Top Performer" ? "highlight-top" : ""}">
+            <tr data-player-key="${playerKey}" class="${rowClass}">
               <td>
                 <div class="name-wrap">
                   <div class="avatar">${initials(player)}</div>
@@ -1868,10 +2029,23 @@
     document.getElementById("eventSelect").addEventListener("change", e => {
       selectedEvent = e.target.value;
       updateEventNavButtons();
+      highlightedPlayerKey = null;
+      updatePlayerSuggestions();
       renderEvent();
     });
 
-    document.getElementById("playerSearch").addEventListener("input", renderEvent);
+    document.getElementById("playerSearch").addEventListener("input", () => {
+      highlightedPlayerKey = null;
+      updatePlayerSuggestions();
+      renderEvent();
+    });
+    document.getElementById("playerSearch").addEventListener("keydown", e => {
+      if(e.key === "Enter"){
+        e.preventDefault();
+        runPlayerSearch();
+      }
+    });
+    document.getElementById("playerSearchBtn").addEventListener("click", runPlayerSearch);
     document.getElementById("prevEventBtn").addEventListener("click", goToPreviousEvent);
     document.getElementById("nextEventBtn").addEventListener("click", goToNextEvent);
 

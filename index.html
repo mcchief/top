@@ -224,7 +224,7 @@
 
     .event-nav-grid{
       display:grid;
-      grid-template-columns:140px 220px minmax(260px,1fr) 140px;
+      grid-template-columns:174px 274px minmax(360px,1fr) 174px;
       gap:12px;
       align-items:end;
     }
@@ -780,9 +780,10 @@
 
 
     .search-combo{
-      display:flex;
-      gap:8px;
-      align-items:center;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 160px;
+      gap:12px;
+      align-items:end;
     }
 
     .search-combo .input{
@@ -791,8 +792,8 @@
     }
 
     .search-combo .button{
-      width:130px;
-      flex:0 0 130px;
+      width:100%;
+      min-height:46px;
     }
 
     .searched-row{
@@ -818,7 +819,7 @@
     @media(max-width:1200px){
       .hero-grid,.bottom-grid.two-panels{grid-template-columns:1fr}
       .kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-      .event-nav-grid{grid-template-columns:140px 220px 1fr 140px}
+      .event-nav-grid{grid-template-columns:150px 220px 1fr 150px}
     }
 
     @media(max-width:980px){
@@ -873,7 +874,7 @@
 
         <div class="status-strip">
           <div class="pill"><strong>Latest Event:</strong>&nbsp;<span id="latestEvent">Loading...</span></div>
-          <div class="pill"><strong>Minimum Rule:</strong>&nbsp;60K points</div>
+          <div class="pill"><strong>Minimum Rule:</strong>&nbsp;<span id="minimumRule">Loading...</span></div>
           <div class="pill"><strong>Escalation Rule:</strong>&nbsp;2 consecutive below = Action Required</div>
           <div class="pill"><strong>Mode:</strong>&nbsp;Trials of Olympus Historical Analysis</div>
         </div>
@@ -900,7 +901,7 @@
           </div>
           <div class="mini-stat">
             <div class="mini-stat-label">Primary KPI</div>
-            <div class="mini-stat-value">Below 60K</div>
+            <div class="mini-stat-value" id="heroTargetRule">Loading...</div>
           </div>
           <div class="mini-stat">
             <div class="mini-stat-label">Clan Outcome</div>
@@ -1016,13 +1017,13 @@
       <div class="kpi-card glass green">
         <div class="kpi-label">On Track</div>
         <div class="kpi-value" id="kpiAbove">0</div>
-        <div class="kpi-note">At or above 60K</div>
+        <div class="kpi-note" id="kpiAboveNote">At or above target</div>
       </div>
 
       <div class="kpi-card glass red">
         <div class="kpi-label">Underperforming Players</div>
         <div class="kpi-value" id="kpiBelow">0</div>
-        <div class="kpi-note">Below 60K threshold</div>
+        <div class="kpi-note" id="kpiBelowNote">Below target threshold</div>
       </div>
 
       <div class="kpi-card glass red">
@@ -1108,7 +1109,7 @@
         <div class="panel-head">
           <div>
             <h3 class="panel-title">Underperforming Players</h3>
-            <p class="panel-desc">Below 60K contribution (affects clan strength)</p>
+            <p class="panel-desc" id="underperformingDesc">Below target contribution (affects clan strength)</p>
           </div>
           <span class="badge-pill badge-red">Below Target</span>
         </div>
@@ -1197,10 +1198,10 @@
   <button id="backToTopBtn" class="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
 
   <script>
-    const RAW_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTIN-cmqQ3mwgRA4DAAAKY1FGRRGVWxbleO57p5ZW5GqpIWHg9OikG8WTzLPlKQeg/pub?gid=672408992&single=true&output=csv";
-    const EVENT_SUMMARY_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTIN-cmqQ3mwgRA4DAAAKY1FGRRGVWxbleO57p5ZW5GqpIWHg9OikG8WTzLPlKQeg/pub?gid=532098501&single=true&output=csv";
-    const EVENT_ANALYSIS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTIN-cmqQ3mwgRA4DAAAKY1FGRRGVWxbleO57p5ZW5GqpIWHg9OikG8WTzLPlKQeg/pub?gid=1754470447&single=true&output=csv";
-    const CLAN_RESULTS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTIN-cmqQ3mwgRA4DAAAKY1FGRRGVWxbleO57p5ZW5GqpIWHg9OikG8WTzLPlKQeg/pub?gid=1237261710&single=true&output=csv";
+    const RAW_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSErj8P-PxJwYIHsjTqAIC9ArKmcWF4a9t7qtFTrlX7vD72BpK7zaZ4vUU4SUN8Fw/pub?gid=486228223&single=true&output=csv";
+    const EVENT_SUMMARY_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSErj8P-PxJwYIHsjTqAIC9ArKmcWF4a9t7qtFTrlX7vD72BpK7zaZ4vUU4SUN8Fw/pub?gid=878993806&single=true&output=csv";
+    const EVENT_ANALYSIS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vROL57pAPgEfnMPdSXJYNuMm3XRQxmOrVkSqGh-fafHokO2HuSflPC8olJDOaZvVg/pub?gid=1852757562&single=true&output=csv";
+    const CLAN_RESULTS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vROL57pAPgEfnMPdSXJYNuMm3XRQxmOrVkSqGh-fafHokO2HuSflPC8olJDOaZvVg/pub?gid=3531947&single=true&output=csv";
 
     let rawRows = [];
     let summaryRows = [];
@@ -1523,8 +1524,35 @@
       return "tier-consistent";
     }
 
-    function getStatus(points){
-      return points < 60000 ? "Below Target" : "On Track";
+    function getTargetForEvent(eventDate){
+      const summaryRow = summaryRows.find(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === eventDate);
+      const fromSummary = num(getValueByAliases(summaryRow || {},["Target_Points","Target Points","Threshold","Minimum Target","Target"]));
+      if(fromSummary > 0) return fromSummary;
+
+      const analysisRow = analysisRows.find(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === eventDate);
+      const fromAnalysis = num(getValueByAliases(analysisRow || {},["Target_Points","Target Points","Threshold","Minimum Target","Target"]));
+      if(fromAnalysis > 0) return fromAnalysis;
+
+      const rawRow = rawRows.find(r => getValueByAliases(r,["Event_Date","Event Date","Date"]) === eventDate);
+      const fromRaw = num(getValueByAliases(rawRow || {},["Target_Points","Target Points","Threshold","Minimum Target","Target"]));
+      if(fromRaw > 0) return fromRaw;
+
+      return 60000;
+    }
+
+    function getRowTarget(row){
+      const direct = num(getValueByAliases(row,["Target_Points","Target Points","Threshold","Minimum Target","Target"]));
+      if(direct > 0) return direct;
+      return getTargetForEvent(getRowEventDate(row));
+    }
+
+    function targetLabel(target){
+      return format(target) + " points";
+    }
+
+    function getStatus(points,target){
+      const required = Number(target) || 60000;
+      return points < required ? "Below Target" : "On Track";
     }
 
     function getAction(streak){
@@ -1765,7 +1793,7 @@
           const hasPrevious = idx > 0 && prev > 0;
           const change = hasPrevious ? points - prev : 0;
           const pct = hasPrevious ? (((points - prev) / prev) * 100) : null;
-          const status = getStatus(points);
+          const status = getStatus(points, getTargetForEvent(eventDate));
           const streak = num(getValueByAliases(row,["Below_Streak","Below Streak","Streak"]));
           const action = getAction(streak);
           const tier = safe(getValueByAliases(row,["Tier","Category"])) || "Consistent";
@@ -1908,8 +1936,9 @@
       const totalPlayers = eventRows.length;
       const totalPoints = eventRows.reduce((s,r)=>s + num(getValueByAliases(r,["Points","Points_Accumulated","Score"])),0);
       const average = totalPlayers ? totalPoints / totalPlayers : 0;
-      const above = eventRows.filter(r => num(getValueByAliases(r,["Points","Points_Accumulated","Score"])) >= 60000).length;
-      const below = eventRows.filter(r => num(getValueByAliases(r,["Points","Points_Accumulated","Score"])) < 60000).length;
+      const eventTarget = getTargetForEvent(selectedEvent);
+      const above = eventRows.filter(r => getRowPoints(r) >= getRowTarget(r)).length;
+      const below = eventRows.filter(r => getRowPoints(r) < getRowTarget(r)).length;
       const repeat = eventRows.filter(r => num(getValueByAliases(r,["Below_Streak","Below Streak","Streak"])) >= 2).length;
       const newMembers = eventRows.filter(r => getEffectiveMovement(r) === "New Member").length;
       const returnedMembers = eventRows.filter(r => getEffectiveMovement(r) === "Returning Member").length;
@@ -1923,6 +1952,11 @@
       set("kpiSummon", repeat.toLocaleString());
       set("kpiNew", newMembers.toLocaleString());
       set("kpiReturned", returnedMembers.toLocaleString());
+      set("minimumRule", targetLabel(eventTarget));
+      set("heroTargetRule", "Below " + format(eventTarget));
+      set("kpiAboveNote", "At or above " + format(eventTarget));
+      set("kpiBelowNote", "Below " + format(eventTarget) + " threshold");
+      set("underperformingDesc", "Below " + format(eventTarget) + " contribution (affects clan strength)");
 
       const clanRow = getClanRowForEvent(selectedEvent);
 
@@ -1965,7 +1999,7 @@
           const hasPrevious = prev > 0;
           const change = hasPrevious ? points - prev : 0;
           const pct = hasPrevious ? ((points - prev) / prev) * 100 : null;
-          const status = getStatus(points);
+          const status = getStatus(points, getTargetForEvent(eventDate));
           const streak = num(getValueByAliases(r,["Below_Streak","Below Streak","Streak"]));
           const action = getAction(streak);
           const movement = getEffectiveMovement(r);
@@ -1996,7 +2030,7 @@
 
       renderList("flaggedList",
         eventRows
-          .filter(r => num(getValueByAliases(r,["Points","Points_Accumulated","Score"])) < 60000)
+          .filter(r => getRowPoints(r) < getRowTarget(r))
           .sort((a,b)=>num(getValueByAliases(b,["Points","Points_Accumulated","Score"])) - num(getValueByAliases(a,["Points","Points_Accumulated","Score"])))
           .map(r => ({
             name:getValueByAliases(r,["Player","Name","Player Name"]),
